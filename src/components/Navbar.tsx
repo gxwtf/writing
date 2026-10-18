@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { BookOpen, HelpCircle, LogOut, PenLine, User } from 'lucide-react';
+import { BookMarked, BookOpen, HelpCircle, LogOut, PenLine, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const NAV_LINK_CLASSES =
@@ -33,7 +33,7 @@ export const Navbar = () => {
             </Link>
 
             <a
-              href="https://docs.gxwtf.cn/#/english/"
+              href="https://docs.gxwtf.cn/#/writing/"
               target="_blank"
               rel="noopener noreferrer"
               title="使用文档"
@@ -41,6 +41,17 @@ export const Navbar = () => {
             >
               <HelpCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden @min-[640px]:inline">使用文档</span>
+            </a>
+
+            <a
+              href="https://english.gxwtf.cn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="前往广学英语单词本"
+              className={`${NAV_LINK_CLASSES} text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800`}
+            >
+              <BookMarked className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden @min-[640px]:inline">广学英语</span>
             </a>
 
             {userInfo && (
