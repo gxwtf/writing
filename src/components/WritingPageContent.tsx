@@ -229,8 +229,10 @@ export function WritingPageContent() {
   // 处理标签配置更新
   const handleTagConfigUpdate = async (newTagConfigs: Record<WordTag, TagConfig>) => {
     try {
-      await saveTagConfigs(newTagConfigs);
-      setAllTagConfigs(newTagConfigs);
+      const saved = await saveTagConfigs(newTagConfigs);
+      setAllTagConfigs(saved);
+      // 标签可能被重命名/删除，重新加载作文列表以同步标签显示
+      await loadData();
     } catch (error) {
       console.error('更新标签配置失败:', error);
     }

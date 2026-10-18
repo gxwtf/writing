@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import type { ColorConfig } from '@/types/word';
-import { countTagUsage, deleteTag } from '@/actions/tags';
+import { countTagUsage, deleteTag, renameTag } from '@/actions/tags';
 
 interface TagEditModalProps {
   isOpen: boolean;
@@ -32,21 +32,19 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
 
   const handleAddTag = () => {
     if (!newTagName.trim()) return;
-    const tagKey = 'custom-' + newTagName.trim().toLowerCase().replace(/\s+/g, '-');
     const displayName = newTagName.trim();
-    if (currentTags[tagKey as WordTag]) return;
     const hasSameDisplayName = Object.values(currentTags).some(config => config.name === displayName);
     if (hasSameDisplayName) return;
 
     const newTag: TagConfig = {
-      id: tagKey,
+      id: displayName,
       name: displayName,
       colorId: 'blue',
       description: '',
     };
     onTagsUpdate({
       ...currentTags,
-      [tagKey as WordTag]: newTag,
+      [displayName]: newTag,
     });
     setNewTagName('');
   };
@@ -82,12 +80,31 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
     setEditingTagColor(currentTags[tag].colorId);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editingTag || !editingTagName.trim()) return;
+    const oldName = currentTags[editingTag]?.name || editingTag;
+    const newName = editingTagName.trim();
+
+    if (newName !== oldName) {
+      const duplicated = Object.values(currentTags).some(
+        config => config.name === newName && config.name !== oldName
+      );
+      if (duplicated) {
+        alert('已存在同名标签');
+        return;
+      }
+      const result = await renameTag(oldName, newName);
+      if (!result.success) {
+        alert(result.error || '标签改名失败');
+        return;
+      }
+    }
+
     const updatedTags = { ...currentTags };
-    updatedTags[editingTag] = {
-      id: editingTag,
-      name: editingTagName.trim(),
+    delete updatedTags[editingTag];
+    updatedTags[newName] = {
+      id: newName,
+      name: newName,
       colorId: editingTagColor,
       description: currentTags[editingTag]?.description || '',
     };

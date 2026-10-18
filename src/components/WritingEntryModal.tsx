@@ -117,15 +117,16 @@ export const WritingEntryModal = ({
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {(Object.keys(allTagConfigs) as WordTag[]).map(tag => {
-                  const tagConfig = allTagConfigs[tag];
+                {Object.values(allTagConfigs).map(tagConfig => {
                   if (!tagConfig) return null;
-                  const isSelected = selectedTags.includes(tag);
+                  // 标签身份统一使用显示名（name），避免与配置对象的内部 key 混用
+                  const tagName = tagConfig.name;
+                  const isSelected = selectedTags.includes(tagName);
                   const colorPreset = COLOR_PRESETS.find(c => c.id === tagConfig.colorId);
 
                   return (
                     <Badge
-                      key={tag}
+                      key={tagName}
                       variant="outline"
                       className={`
                         ${
@@ -139,7 +140,7 @@ export const WritingEntryModal = ({
                         }
                         cursor-pointer transition-all hover:scale-105 hover:opacity-90
                       `}
-                      onClick={() => toggleTag(tag)}
+                      onClick={() => toggleTag(tagName)}
                     >
                       {tagConfig.name}
                     </Badge>
@@ -174,7 +175,7 @@ export const WritingEntryModal = ({
           isOpen={showTagEditModal}
           onClose={() => setShowTagEditModal(false)}
           onTagsUpdate={(newTagConfigs) => {
-            setShowTagEditModal(false);
+            // 保持标签管理弹窗打开，方便连续新增/改色/删除
             onTagsUpdate?.(newTagConfigs);
           }}
           currentTags={allTagConfigs}

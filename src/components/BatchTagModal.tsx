@@ -84,7 +84,7 @@ export const BatchTagModal = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    const allTags = Object.keys(allTagConfigs) as WordTag[];
+                    const allTags = Object.values(allTagConfigs).map(config => config.name);
                     setSelectedTags(allTags);
                   }}
                   className="h-8 px-3 text-xs whitespace-nowrap"
@@ -103,15 +103,15 @@ export const BatchTagModal = ({
 
               {/* 标签列表 */}
               <div className="flex flex-wrap gap-2">
-                {(Object.keys(allTagConfigs) as WordTag[]).map(tag => {
-                  const tagConfig = allTagConfigs[tag];
+                {Object.values(allTagConfigs).map(tagConfig => {
                   if (!tagConfig) return null;
-                  const isSelected = selectedTags.includes(tag);
+                  const tagName = tagConfig.name;
+                  const isSelected = selectedTags.includes(tagName);
                   const colorPreset = COLOR_PRESETS.find(c => c.id === tagConfig.colorId);
 
                   return (
                     <Badge
-                      key={tag}
+                      key={tagName}
                       variant="outline"
                       className={`
                         ${
@@ -125,7 +125,7 @@ export const BatchTagModal = ({
                         }
                         cursor-pointer transition-all hover:scale-105 hover:opacity-90
                       `}
-                      onClick={() => toggleTag(tag)}
+                      onClick={() => toggleTag(tagName)}
                     >
                       {tagConfig.name}
                     </Badge>
@@ -163,7 +163,7 @@ export const BatchTagModal = ({
           isOpen={showTagEditModal}
           onClose={() => setShowTagEditModal(false)}
           onTagsUpdate={(newTagConfigs) => {
-            setShowTagEditModal(false);
+            // 保持标签管理弹窗打开，方便连续操作
             onTagsUpdate?.(newTagConfigs);
           }}
           currentTags={allTagConfigs}

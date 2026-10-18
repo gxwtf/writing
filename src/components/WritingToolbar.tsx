@@ -195,16 +195,16 @@ export const WritingToolbar = ({
                   </p>
 
                   <div className="space-y-2 mb-4">
-                    {Object.keys(allTagConfigs).length === 0 ? (
+                    {Object.values(allTagConfigs).length === 0 ? (
                       <p className="text-sm text-gray-500 dark:text-gray-400">暂无标签</p>
                     ) : (
-                      Object.keys(allTagConfigs).map(tag => {
-                        const tagConfig = allTagConfigs[tag];
+                      Object.values(allTagConfigs).map((tagConfig, index) => {
                         if (!tagConfig) return null;
-                        const inputId = `tag-filter-${tag}`;
+                        const tagName = tagConfig.name;
+                        const inputId = `tag-filter-${index}`;
                         return (
                           <div
-                            key={tag}
+                            key={tagName}
                             className="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700"
                             onClick={(e) => e.stopPropagation()}
                             onMouseDown={(e) => e.stopPropagation()}
@@ -213,11 +213,11 @@ export const WritingToolbar = ({
                             <input
                               id={inputId}
                               type="checkbox"
-                              checked={filterTags.includes(tag)}
+                              checked={filterTags.includes(tagName)}
                               onClick={(e) => e.stopPropagation()}
                               onMouseDown={(e) => e.stopPropagation()}
                               onPointerDown={(e) => e.stopPropagation()}
-                              onChange={(e) => handleTagToggle(tag, e)}
+                              onChange={(e) => handleTagToggle(tagName, e)}
                               className="rounded border-gray-300 dark:border-gray-600"
                             />
                             <label
@@ -445,16 +445,16 @@ export const WritingToolbar = ({
                   </p>
 
                   <div className="space-y-2 mb-4">
-                    {Object.keys(allTagConfigs).length === 0 ? (
+                    {Object.values(allTagConfigs).length === 0 ? (
                       <p className="text-sm text-gray-500 dark:text-gray-400">暂无标签</p>
                     ) : (
-                      Object.keys(allTagConfigs).map(tag => {
-                        const tagConfig = allTagConfigs[tag];
+                      Object.values(allTagConfigs).map((tagConfig, index) => {
                         if (!tagConfig) return null;
-                        const inputId = `tag-filter-mobile-${tag}`;
+                        const tagName = tagConfig.name;
+                        const inputId = `tag-filter-mobile-${index}`;
                         return (
                           <div
-                            key={tag}
+                            key={tagName}
                             className="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700"
                             onClick={(e) => e.stopPropagation()}
                             onMouseDown={(e) => e.stopPropagation()}
@@ -463,11 +463,11 @@ export const WritingToolbar = ({
                             <input
                               id={inputId}
                               type="checkbox"
-                              checked={filterTags.includes(tag)}
+                              checked={filterTags.includes(tagName)}
                               onClick={(e) => e.stopPropagation()}
                               onMouseDown={(e) => e.stopPropagation()}
                               onPointerDown={(e) => e.stopPropagation()}
-                              onChange={(e) => handleTagToggle(tag, e)}
+                              onChange={(e) => handleTagToggle(tagName, e)}
                               className="rounded border-gray-300 dark:border-gray-600"
                             />
                             <label

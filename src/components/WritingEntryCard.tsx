@@ -103,7 +103,7 @@ export const WritingEntryCard = ({
           {/* 标签列表 */}
           <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
             {entry.tags.map(tag => {
-              const tagConfig = allTagConfigs[tag as WordTag];
+              const tagConfig = Object.values(allTagConfigs).find(config => config.name === tag);
               const displayName = tagConfig?.name || tag;
               const colorPreset = tagConfig?.colorId
                 ? COLOR_PRESETS.find(c => c.id === tagConfig.colorId)

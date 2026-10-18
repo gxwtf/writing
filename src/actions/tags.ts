@@ -83,3 +83,27 @@ export async function deleteTag(tagName: string): Promise<{ success: boolean }> 
 
   return { success: true };
 }
+
+/**
+ * 重命名标签。
+ * 作文与标签通过 `WritingEntryTag.tagId` 关联，因此改 `Tag.name` 后所有作文会自动显示新名称；
+ * 同时更新当前用户的 `TagConfig` 名称。
+ */
+export async function renameTag(oldName: string, newName: string): Promise<{ success: boolean; error?: string }> {
+  const user = await getAuthUser();
+  if (!user) throw new Error('未登录');
+
+  const target = newName.trim();
+  if (!target) return { success: false, error: '标签名不能为空' };
+  if (oldName === target) return { success: true };
+
+  const conflict = await prisma.tag.findUnique({ where: { name: target } });
+  if (conflict) return { success: false, error: '已存在同名标签' };
+
+  await prisma.$transaction([
+    prisma.tag.updateMany({ where: { name: oldName }, data: { name: target } }),
+    prisma.tagConfig.updateMany({ where: { userId: user.userId, name: oldName }, data: { name: target } }),
+  ]);
+
+  return { success: true };
+}
