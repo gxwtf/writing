@@ -1,0 +1,62 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env
+.env.local
+.env.development
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# PDF 导出字体为部署资产（版权字体，不入库；部署时从字体源拷贝）
+public/fonts/*.ttf
+public/fonts/*.ttc
+public/fonts/*.otf
+
+# prisma
+/src/generated/prisma
+
+# package-lock.json
+package-lock.json
+
+# E2E 测试账号文件与产物（含敏感信息）
+scripts/e2e/creds.json
+scripts/e2e/artifacts/
+
+# 临时文件
+temp/
+.aider*

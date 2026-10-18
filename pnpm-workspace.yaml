@@ -1,0 +1,15 @@
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - core-js
+  - esbuild
+  - prisma
+  - sharp
+allowBuilds:
+  '@prisma/engines': true
+  core-js: true
+  esbuild: true
+  prisma: true
+  sharp: true
+minimumReleaseAgeExclude:
+  - baseline-browser-mapping@2.11.23
+  - tailwind-merge@3.7.0

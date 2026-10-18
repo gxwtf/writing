@@ -1,0 +1,387 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/*
+ * 北京师范大学附属实验中学 视觉形象识别系统（VI）
+ * 色彩规范 A4 —— https://vi.sdsz.com.cn/fenlei/a4/
+ *
+ * 标准色：实验红 #A31F24、赤诚红 #C22525、深赤红 #8A1010、坚实黑 #231815、纯净白 #FFFFFF
+ * 补充辅助色：科技蓝 #053391、艺术紫 #492B93、体育绿 #90BF3D、人文棕 #5E3424、青春橙 #E59D48、行政灰 #9B9B9B
+ * 辅助色：黄 #FDD000、橙 #F08300、灰 #9FA0A0、浅灰 #E6E6E6、绿 #41B25D、深绿 #007963、浅蓝 #0086D1、蓝 #004098、紫 #4D4398
+ */
+@theme {
+  /* ===== VI 品牌语义色 ===== */
+  --color-brand-red: #a31f24; /* 实验红（标准色） */
+  --color-brand-crimson: #c22525; /* 赤诚红 */
+  --color-brand-deep-red: #8a1010; /* 深赤红 */
+  --color-brand-black: #231815; /* 坚实黑 */
+  --color-brand-white: #ffffff; /* 纯净白 */
+
+  --color-brand-tech-blue: #053391; /* 科技蓝 */
+  --color-brand-purple: #492b93; /* 艺术紫 */
+  --color-brand-sports-green: #90bf3d; /* 体育绿 */
+  --color-brand-brown: #5e3424; /* 人文棕 */
+  --color-brand-youth-orange: #e59d48; /* 青春橙 */
+  --color-brand-admin-gray: #9b9b9b; /* 行政灰 */
+
+  --color-brand-yellow: #fdd000; /* 辅助黄 */
+  --color-brand-orange: #f08300; /* 辅助橙 */
+  --color-brand-gray: #9fa0a0; /* 辅助灰 */
+  --color-brand-light-gray: #e6e6e6; /* 辅助浅灰 */
+  --color-brand-green: #41b25d; /* 辅助绿 */
+  --color-brand-dark-green: #007963; /* 辅助深绿 */
+  --color-brand-light-blue: #0086d1; /* 辅助浅蓝 */
+  --color-brand-blue: #004098; /* 辅助蓝 */
+  --color-brand-aux-purple: #4d4398; /* 辅助紫 */
+
+  /* ===== 品牌强调色重映射：blue / indigo / sky / cyan / teal / purple / violet / fuchsia -> 实验红系 =====
+   * 依据 VI 色彩规范 A4 / A-2-1：
+   *   实验红 #A31F24（标准色，RGB/163 31 36，PANTONE 1795C）
+   *   赤诚红 #C22525、深赤红 #8A1010（规范中与实验红相近的两种红，小面积搭配使用）
+   *   标准色附 10%~90% 色阶（A4-01-1），下方浅色取自规范色阶样本。
+   * 仅重映射界面装饰 / 品牌色相；green(正确) / amber(警告) / red(错误) 等语义色保持不变。
+   * 用户自定义标签颜色使用显式色值（见 constants/word-tags.tsx），不受此重映射影响。 */
+  --color-blue-50: #fdf6f5;
+  --color-blue-100: #f5e8e7; /* 实验红 10% 色阶 */
+  --color-blue-200: #ebd1d2; /* 实验红 20% 色阶 */
+  --color-blue-300: #e3bbbb; /* 实验红 30% 色阶 */
+  --color-blue-400: #d9a5a6; /* 实验红 40% 色阶 */
+  --color-blue-500: #c22525; /* 赤诚红 */
+  --color-blue-600: #a31f24; /* 实验红 */
+  --color-blue-700: #8a1010; /* 深赤红 */
+  --color-blue-800: #701414;
+  --color-blue-900: #5b1517;
+  --color-blue-950: #3c0d0e;
+
+  /* ===== 暖色邻近色（与实验红同属暖色系，用于点缀以提升层次感） =====
+   * 取自 VI 补充辅助色：青春橙 #E59D48、辅助橙 #F08300、辅助黄 #FDD000、人文棕 #5E3424。
+   * 用于 AI 功能、渐变收尾、浅色底等，避免整站只有单一红色。 */
+
+  /* indigo -> 青春橙 / 辅助橙（渐变收尾） */
+  --color-indigo-50: #fef9f1;
+  --color-indigo-100: #fdf0da;
+  --color-indigo-200: #fae0b3;
+  --color-indigo-300: #f6c87f;
+  --color-indigo-400: #f0ad52;
+  --color-indigo-500: #e59d48; /* 青春橙 */
+  --color-indigo-600: #f08300; /* 辅助橙 */
+  --color-indigo-700: #c96d00;
+  --color-indigo-800: #a05700;
+  --color-indigo-900: #7e4600;
+  --color-indigo-950: #4a2900;
+
+  /* purple -> VI 辅助紫 #484098（AI 功能强调色） */
+  --color-purple-50: #f3f2f9;
+  --color-purple-100: #e8e6f2;
+  --color-purple-200: #d1cde6;
+  --color-purple-300: #b3aed6;
+  --color-purple-400: #8d86c4;
+  --color-purple-500: #484098; /* VI 辅助紫 */
+  --color-purple-600: #3a337d;
+  --color-purple-700: #302a68;
+  --color-purple-800: #282354;
+  --color-purple-900: #211d45;
+  --color-purple-950: #12102a;
+
+  /* violet -> VI 亮紫 #7848B8（AI 渐变收尾） */
+  --color-violet-50: #f8f5fc;
+  --color-violet-100: #f0e9f8;
+  --color-violet-200: #e2d4f0;
+  --color-violet-300: #ccb2e4;
+  --color-violet-400: #a67fd0;
+  --color-violet-500: #7848b8; /* VI 亮紫 */
+  --color-violet-600: #6539a0;
+  --color-violet-700: #553084;
+  --color-violet-800: #46296d;
+  --color-violet-900: #3b245a;
+  --color-violet-950: #241238;
+
+  /* sky -> 珊瑚红（暖粉调） */
+  --color-sky-50: #fdf5f3;
+  --color-sky-100: #fbe9e4;
+  --color-sky-200: #f7d3ca;
+  --color-sky-300: #f0b3a4;
+  --color-sky-400: #e78a74;
+  --color-sky-500: #dc6b52;
+  --color-sky-600: #c74f35;
+  --color-sky-700: #a63e29;
+  --color-sky-800: #883527;
+  --color-sky-900: #712f24;
+  --color-sky-950: #3d160f;
+
+  /* cyan -> 珊瑚红（暖粉调） */
+  --color-cyan-50: #fdf5f3;
+  --color-cyan-100: #fbe9e4;
+  --color-cyan-200: #f7d3ca;
+  --color-cyan-300: #f0b3a4;
+  --color-cyan-400: #e78a74;
+  --color-cyan-500: #dc6b52;
+  --color-cyan-600: #c74f35;
+  --color-cyan-700: #a63e29;
+  --color-cyan-800: #883527;
+  --color-cyan-900: #712f24;
+  --color-cyan-950: #3d160f;
+
+  /* teal -> 人文棕（暖深色） */
+  --color-teal-50: #f8f5f2;
+  --color-teal-100: #efe8e1;
+  --color-teal-200: #ded0c3;
+  --color-teal-300: #c5ae9b;
+  --color-teal-400: #a98a71;
+  --color-teal-500: #8f6e55;
+  --color-teal-600: #745441;
+  --color-teal-700: #5e3424; /* 人文棕 */
+  --color-teal-800: #4b2a1e;
+  --color-teal-900: #3f251c;
+  --color-teal-950: #221109;
+
+  /* fuchsia -> 珊瑚红（暖粉调） */
+  --color-fuchsia-50: #fdf5f3;
+  --color-fuchsia-100: #fbe9e4;
+  --color-fuchsia-200: #f7d3ca;
+  --color-fuchsia-300: #f0b3a4;
+  --color-fuchsia-400: #e78a74;
+  --color-fuchsia-500: #dc6b52;
+  --color-fuchsia-600: #c74f35;
+  --color-fuchsia-700: #a63e29;
+  --color-fuchsia-800: #883527;
+  --color-fuchsia-900: #712f24;
+  --color-fuchsia-950: #3d160f;
+
+  /* gray / slate / zinc / neutral / stone -> 坚实黑 + 行政灰 暖中性色阶 */
+  --color-gray-50: #faf9f9;
+  --color-gray-100: #f4f2f2;
+  --color-gray-200: #e7e4e4;
+  --color-gray-300: #d3cfcf;
+  --color-gray-400: #b4b0b0;
+  --color-gray-500: #9b9b9b;
+  --color-gray-600: #7d7a79;
+  --color-gray-700: #5f5b5a;
+  --color-gray-800: #403c3b;
+  --color-gray-900: #231815;
+  --color-gray-950: #14100f;
+
+  --color-slate-50: #faf9f9;
+  --color-slate-100: #f4f2f2;
+  --color-slate-200: #e7e4e4;
+  --color-slate-300: #d3cfcf;
+  --color-slate-400: #b4b0b0;
+  --color-slate-500: #9b9b9b;
+  --color-slate-600: #7d7a79;
+  --color-slate-700: #5f5b5a;
+  --color-slate-800: #403c3b;
+  --color-slate-900: #231815;
+  --color-slate-950: #14100f;
+
+  --color-zinc-50: #faf9f9;
+  --color-zinc-100: #f4f2f2;
+  --color-zinc-200: #e7e4e4;
+  --color-zinc-300: #d3cfcf;
+  --color-zinc-400: #b4b0b0;
+  --color-zinc-500: #9b9b9b;
+  --color-zinc-600: #7d7a79;
+  --color-zinc-700: #5f5b5a;
+  --color-zinc-800: #403c3b;
+  --color-zinc-900: #231815;
+  --color-zinc-950: #14100f;
+
+  --color-neutral-50: #faf9f9;
+  --color-neutral-100: #f4f2f2;
+  --color-neutral-200: #e7e4e4;
+  --color-neutral-300: #d3cfcf;
+  --color-neutral-400: #b4b0b0;
+  --color-neutral-500: #9b9b9b;
+  --color-neutral-600: #7d7a79;
+  --color-neutral-700: #5f5b5a;
+  --color-neutral-800: #403c3b;
+  --color-neutral-900: #231815;
+  --color-neutral-950: #14100f;
+
+  --color-stone-50: #faf9f9;
+  --color-stone-100: #f4f2f2;
+  --color-stone-200: #e7e4e4;
+  --color-stone-300: #d3cfcf;
+  --color-stone-400: #b4b0b0;
+  --color-stone-500: #9b9b9b;
+  --color-stone-600: #7d7a79;
+  --color-stone-700: #5f5b5a;
+  --color-stone-800: #403c3b;
+  --color-stone-900: #231815;
+  --color-stone-950: #14100f;
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #231815;
+  --card: #ffffff;
+  --card-foreground: #231815;
+  --popover: #ffffff;
+  --popover-foreground: #231815;
+  --primary: #a31f24;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f2f2;
+  --secondary-foreground: #231815;
+  --muted: #f4f2f2;
+  --muted-foreground: #7d7a79;
+  --accent: #f4f2f2;
+  --accent-foreground: #231815;
+  --destructive: #c22525;
+  --border: #e7e4e4;
+  --input: #e7e4e4;
+  --ring: #a31f24;
+  --chart-1: #a31f24;
+  --chart-2: #f08300;
+  --chart-3: #41b25d;
+  --chart-4: #492b93;
+  --chart-5: #0086d1;
+  --sidebar: #faf9f9;
+  --sidebar-foreground: #231815;
+  --sidebar-primary: #a31f24;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f2f2;
+  --sidebar-accent-foreground: #231815;
+  --sidebar-border: #e7e4e4;
+  --sidebar-ring: #a31f24;
+}
+
+.dark {
+  --background: #14100f;
+  --foreground: #f4f2f2;
+  --card: #231815;
+  --card-foreground: #f4f2f2;
+  --popover: #231815;
+  --popover-foreground: #f4f2f2;
+  --primary: #c22525;
+  --primary-foreground: #ffffff;
+  --secondary: #403c3b;
+  --secondary-foreground: #f4f2f2;
+  --muted: #403c3b;
+  --muted-foreground: #b4b0b0;
+  --accent: #403c3b;
+  --accent-foreground: #f4f2f2;
+  --destructive: #c22525;
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 15%);
+  --ring: #c22525;
+  --chart-1: #c22525;
+  --chart-2: #f08300;
+  --chart-3: #41b25d;
+  --chart-4: #6a4fbf;
+  --chart-5: #0086d1;
+  --sidebar: #231815;
+  --sidebar-foreground: #f4f2f2;
+  --sidebar-primary: #c22525;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #403c3b;
+  --sidebar-accent-foreground: #f4f2f2;
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-ring: #c22525;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    font-size: 17px;
+    /* iOS WebApp：禁用长按/点按高亮，禁止橡皮筋与下拉刷新 */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior-y: none;
+  }
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+    /* WebApp 中避免长按选中导航/按钮文本 */
+    -webkit-touch-callout: none;
+  }
+  /* 输入框、正文仍需允许选择 */
+  input,
+  textarea,
+  [contenteditable="true"] {
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  button,
+  a,
+  [role="button"] {
+    cursor: pointer;
+    /* 去除移动端 300ms 点击延迟与双击缩放 */
+    touch-action: manipulation;
+  }
+}
+
+/* ===== iOS 安全区工具类（刘海 / Home Indicator）===== */
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility px-safe {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* standalone（已添加到主屏幕）模式下的钩子 */
+@media (display-mode: standalone) {
+  html {
+    /* WebApp 中离开页面时更省电；同时保留正常滚动 */
+    overscroll-behavior-y: none;
+  }
+}
+
+::selection {
+  background-color: rgba(163, 31, 36, 0.25);
+  color: inherit;
+}
+
+.dark ::selection {
+  background-color: rgba(194, 37, 37, 0.4);
+  color: inherit;
+}
