@@ -81,6 +81,42 @@ sudo /usr/local/sbin/gxwtf-systemctl restart gxwriting.service
 
 > 构建脚本固定为 `next build --webpack`，请勿改回默认的 Turbopack。
 
+## 图标、启动图与添加到主屏幕（PWA）
+
+站点图标是 lucide **`notebook-pen`**（笔记本 + 笔）：与广坊主站 React 首页「作文积累本」
+子系统卡片同款图形，配色取本站品牌色（浅实验红底 + 实验红图形）。
+
+全部图标 / 启动图由脚本生成，**不要手改 PNG**，改完脚本重新生成即可：
+
+```bash
+node scripts/generate-icons.mjs                  # 默认 light 配色（当前线上样式）
+node scripts/generate-icons.mjs --variant=brand  # 实验红实底 + 白笔
+node scripts/generate-icons.mjs --variant=indigo # 主站卡片的靛蓝→紫渐变
+node scripts/generate-icons.mjs --out=/tmp/preview  # 只预览，不覆盖 public/
+```
+
+产物：
+
+| 文件 | 用途 |
+| --- | --- |
+| `public/icon.svg` | SVG 母版 |
+| `public/icon-192.png` / `icon-512.png` | manifest 普通图标（`purpose: any`） |
+| `public/icon-maskable-512.png` | Android 自适应图标（`purpose: maskable`，图形收进安全区） |
+| `public/apple-touch-icon.png` | iOS 主屏图标 180×180 |
+| `public/favicon.ico` | 浏览器标签页（16 / 32 / 48，笔画加粗） |
+| `public/splash/apple-splash-*.png` | iOS 启动图（13 种尺寸） |
+
+PWA 相关：
+
+- `public/manifest.json`：`作文积累本`、`standalone`、`theme_color #a31f24`
+- `public/sw.js`：**只缓存静态资源**（`/_next/static` cache-first，图片/字体 stale-while-revalidate）；
+  页面与 Server Action 一律走网络，避免把登录态页面或过期作文写进缓存
+- `src/components/WebAppManager.tsx`：生产环境注册 SW；iOS Safari 弹「添加到主屏幕」操作提示，
+  Chromium 移动端接管 `beforeinstallprompt` 提供「安装」按钮（桌面端不显示，避免干扰 e2e）
+
+> `public/favicon.ico` 是唯一 favicon 来源；`src/app/favicon.ico` 已移除，
+> 由 `layout.tsx` 的 `metadata.icons` 统一声明，请勿再加回。
+
 ## 数据来源
 
 首次上线时，作文数据从广学英语数据库（`gxwtf_english`）的

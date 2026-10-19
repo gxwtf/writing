@@ -1,4 +1,4 @@
-import { BookOpen, FileText, PenLine, Sparkles, Tags } from 'lucide-react';
+import { FileText, NotebookPen, PenLine, Sparkles, Tags } from 'lucide-react';
 import { GxaccountLogin } from '@/components/GxaccountLogin';
 
 export const UnauthenticatedPage = () => {
@@ -8,7 +8,7 @@ export const UnauthenticatedPage = () => {
         <div className="mb-8">
           <div className="relative w-32 h-32 mx-auto mb-6">
             <div className="absolute inset-0 bg-gradient-to-r from-brand-crimson to-brand-deep-red rounded-full blur-xl opacity-30"></div>
-            <BookOpen className="relative w-full h-full text-brand-crimson" />
+            <NotebookPen className="relative w-full h-full text-brand-crimson" />
           </div>
           <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
             作文积累本

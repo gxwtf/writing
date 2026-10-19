@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { BookMarked, BookOpen, HelpCircle, LogOut, PenLine, User } from 'lucide-react';
+import { BookMarked, HelpCircle, LogOut, NotebookPen, PenLine, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const NAV_LINK_CLASSES =
@@ -16,7 +16,8 @@ export const Navbar = () => {
         <div className="@container flex justify-between h-16">
           <div className="flex items-center shrink-0">
             <Link href="/" className="flex items-center space-x-2 sm:space-x-3 shrink-0 whitespace-nowrap">
-              <BookOpen className="h-7 w-7 sm:h-8 sm:w-8 text-brand-crimson" />
+              {/* 与 favicon / 主屏图标同一图形：lucide notebook-pen */}
+              <NotebookPen className="h-7 w-7 sm:h-8 sm:w-8 text-brand-crimson" />
               <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                 作文积累本
               </span>
