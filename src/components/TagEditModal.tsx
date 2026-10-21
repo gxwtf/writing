@@ -159,6 +159,7 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                           value={editingTagName}
                           onChange={(e) => setEditingTagName(e.target.value)}
                           className="flex-1"
+                          aria-label="标签名称"
                           autoFocus
                         />
                         <div className="flex items-center gap-1">
@@ -190,6 +191,8 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                             size="sm"
                             variant="ghost"
                             onClick={() => handleEditTag(tag)}
+                            title="编辑标签"
+                            aria-label={`编辑标签 ${config.name}`}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
@@ -198,6 +201,8 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                             variant="ghost"
                             onClick={() => handleOpenDeleteConfirm(tag)}
                             className="text-red-500 hover:text-red-700"
+                            title="删除标签"
+                            aria-label={`删除标签 ${config.name}`}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>

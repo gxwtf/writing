@@ -1,13 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { BookMarked, HelpCircle, LogOut, NotebookPen, PenLine, User } from 'lucide-react';
+import { BookMarked, HelpCircle, LogOut, NotebookPen, PenLine, Settings, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const NAV_LINK_CLASSES =
   'flex items-center space-x-1 @min-[560px]:space-x-1.5 sm:space-x-2 px-1.5 @min-[560px]:px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors shrink-0 whitespace-nowrap';
 
-export const Navbar = () => {
+const INACTIVE_LINK_CLASSES =
+  'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800';
+
+/** 顶部导航高亮的当前页面：首页（我的积累）或设置 */
+export type NavbarPage = 'home' | 'settings';
+
+interface NavbarProps {
+  currentPage?: NavbarPage;
+}
+
+export const Navbar = ({ currentPage = 'home' }: NavbarProps) => {
   const { userInfo, logout } = useAuth();
 
   return (
@@ -27,7 +37,11 @@ export const Navbar = () => {
           <div className="min-w-0 flex items-center space-x-1 @min-[560px]:space-x-2 sm:space-x-4 md:space-x-6 flex-nowrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <Link
               href="/"
-              className={`${NAV_LINK_CLASSES} bg-red-100 text-brand-crimson dark:bg-red-900 dark:text-red-300`}
+              className={`${NAV_LINK_CLASSES} ${
+                currentPage === 'home'
+                  ? 'bg-red-100 text-brand-crimson dark:bg-red-900 dark:text-red-300'
+                  : INACTIVE_LINK_CLASSES
+              }`}
             >
               <PenLine className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden @min-[560px]:inline">我的积累</span>
@@ -38,7 +52,7 @@ export const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               title="使用文档"
-              className={`${NAV_LINK_CLASSES} text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800`}
+              className={`${NAV_LINK_CLASSES} ${INACTIVE_LINK_CLASSES}`}
             >
               <HelpCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden @min-[640px]:inline">使用文档</span>
@@ -49,7 +63,7 @@ export const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               title="前往广学英语单词本"
-              className={`${NAV_LINK_CLASSES} text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800`}
+              className={`${NAV_LINK_CLASSES} ${INACTIVE_LINK_CLASSES}`}
             >
               <BookMarked className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden @min-[640px]:inline">广学英语</span>
@@ -57,6 +71,18 @@ export const Navbar = () => {
 
             {userInfo && (
               <div className="flex items-center space-x-2 sm:space-x-4 pl-2 sm:pl-4 border-l border-gray-200 dark:border-gray-700 shrink-0">
+                <Link
+                  href="/settings"
+                  title="设置"
+                  className={`${NAV_LINK_CLASSES} ${
+                    currentPage === 'settings'
+                      ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100'
+                      : INACTIVE_LINK_CLASSES
+                  }`}
+                >
+                  <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span className="hidden @min-[560px]:inline">设置</span>
+                </Link>
                 <div className="hidden @min-[680px]:flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
                   <User className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span className="hidden @min-[680px]:inline max-w-[6em] truncate">{userInfo.userName}</span>
