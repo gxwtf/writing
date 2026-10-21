@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { BookMarked, HelpCircle, Home, Library, LogOut, NotebookPen, Settings, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -13,12 +14,24 @@ const INACTIVE_LINK_CLASSES =
 /** 顶部导航高亮的当前页面：首页、积累本列表/详情、设置 */
 export type NavbarPage = 'home' | 'books' | 'settings';
 
+/** 根据路径推断当前页面，避免每个页面都要记得传 currentPage */
+function resolvePage(pathname: string | null): NavbarPage {
+  const path = pathname || '/';
+  if (path.startsWith('/settings')) return 'settings';
+  // /books、/books/all、/books/<id> 都算「积累本」
+  if (path === '/books' || path.startsWith('/books/')) return 'books';
+  return 'home';
+}
+
 interface NavbarProps {
+  /** 显式覆盖高亮项；不传时按当前路径自动判断 */
   currentPage?: NavbarPage;
 }
 
-export const Navbar = ({ currentPage = 'home' }: NavbarProps) => {
+export const Navbar = ({ currentPage }: NavbarProps = {}) => {
   const { userInfo, logout } = useAuth();
+  const pathname = usePathname();
+  const activePage = currentPage ?? resolvePage(pathname);
 
   return (
     <nav className="pt-safe px-safe bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
@@ -38,10 +51,11 @@ export const Navbar = ({ currentPage = 'home' }: NavbarProps) => {
             <Link
               href="/"
               className={`${NAV_LINK_CLASSES} ${
-                currentPage === 'home'
+                activePage === 'home'
                   ? 'bg-red-100 text-brand-crimson dark:bg-red-900 dark:text-red-300'
                   : INACTIVE_LINK_CLASSES
               }`}
+              aria-current={activePage === 'home' ? 'page' : undefined}
             >
               <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden @min-[560px]:inline">首页</span>
@@ -50,10 +64,11 @@ export const Navbar = ({ currentPage = 'home' }: NavbarProps) => {
             <Link
               href="/books"
               className={`${NAV_LINK_CLASSES} ${
-                currentPage === 'books'
+                activePage === 'books'
                   ? 'bg-red-100 text-brand-crimson dark:bg-red-900 dark:text-red-300'
                   : INACTIVE_LINK_CLASSES
               }`}
+              aria-current={activePage === 'books' ? 'page' : undefined}
             >
               <Library className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden @min-[560px]:inline">积累本</span>
@@ -87,10 +102,11 @@ export const Navbar = ({ currentPage = 'home' }: NavbarProps) => {
                   href="/settings"
                   title="设置"
                   className={`${NAV_LINK_CLASSES} ${
-                    currentPage === 'settings'
+                    activePage === 'settings'
                       ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100'
                       : INACTIVE_LINK_CLASSES
                   }`}
+                  aria-current={activePage === 'settings' ? 'page' : undefined}
                 >
                   <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span className="hidden @min-[560px]:inline">设置</span>

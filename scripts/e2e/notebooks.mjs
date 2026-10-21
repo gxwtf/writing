@@ -271,6 +271,18 @@ const main = async () => {
       const body = await page.locator('body').innerText();
       ok(body.includes('共 0 个积累'), `空本应显示 0 条，实际：${body.slice(0, 120)}`);
       ok(await page.getByRole('link', { name: /返回我的积累本/ }).count(), '缺少返回积累本列表的链接');
+      // 导航栏应高亮「积累本」而不是「首页」
+      const nav = page.locator('nav').first();
+      ok(
+        (await nav.getByRole('link', { name: '积累本', exact: true }).getAttribute('aria-current')) ===
+          'page',
+        '导航栏没有高亮「积累本」'
+      );
+      ok(
+        (await nav.getByRole('link', { name: '首页', exact: true }).getAttribute('aria-current')) ===
+          null,
+        '导航栏仍高亮「首页」'
+      );
     });
 
     // ---------------------------------------------------------------- NT07 本内新增
