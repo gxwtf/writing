@@ -20,3 +20,17 @@ export interface TagConfig {
   colorId: string;
   description: string;
 }
+
+/**
+ * 积累本（一个用户可有多个，条目可在多个本之间共享）。
+ * 与广学英语的 Wordbook 同构。
+ */
+export interface Notebook {
+  id: number;
+  name: string;
+  entryCount: number;
+  /** 卡片上展示的条目摘要（最多 6 条，取内容前 24 字） */
+  previewEntries: string[];
+  createdAt: string;
+  updatedAt: string;
+}

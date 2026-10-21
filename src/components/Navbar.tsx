@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { BookMarked, HelpCircle, LogOut, NotebookPen, PenLine, Settings, User } from 'lucide-react';
+import { BookMarked, HelpCircle, Home, Library, LogOut, NotebookPen, Settings, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const NAV_LINK_CLASSES =
@@ -10,8 +10,8 @@ const NAV_LINK_CLASSES =
 const INACTIVE_LINK_CLASSES =
   'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800';
 
-/** 顶部导航高亮的当前页面：首页（我的积累）或设置 */
-export type NavbarPage = 'home' | 'settings';
+/** 顶部导航高亮的当前页面：首页、积累本列表/详情、设置 */
+export type NavbarPage = 'home' | 'books' | 'settings';
 
 interface NavbarProps {
   currentPage?: NavbarPage;
@@ -43,8 +43,20 @@ export const Navbar = ({ currentPage = 'home' }: NavbarProps) => {
                   : INACTIVE_LINK_CLASSES
               }`}
             >
-              <PenLine className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden @min-[560px]:inline">我的积累</span>
+              <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden @min-[560px]:inline">首页</span>
+            </Link>
+
+            <Link
+              href="/books"
+              className={`${NAV_LINK_CLASSES} ${
+                currentPage === 'books'
+                  ? 'bg-red-100 text-brand-crimson dark:bg-red-900 dark:text-red-300'
+                  : INACTIVE_LINK_CLASSES
+              }`}
+            >
+              <Library className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden @min-[560px]:inline">积累本</span>
             </Link>
 
             <a

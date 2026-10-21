@@ -12,7 +12,9 @@ import {
   Tag,
   FileDown,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  Copy,
+  FolderInput
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -44,6 +46,9 @@ interface WritingToolbarProps {
   onSetTags: () => void;
   onExportPdf: () => void;
   onAIFindWords: () => void;
+  /** 仅在积累本内视图提供：复制 / 移动到其它积累本 */
+  onCopyToNotebook?: () => void;
+  onMoveToNotebook?: () => void;
 }
 
 export const WritingToolbar = ({
@@ -64,6 +69,8 @@ export const WritingToolbar = ({
   onSetTags,
   onExportPdf,
   onAIFindWords,
+  onCopyToNotebook,
+  onMoveToNotebook,
 }: WritingToolbarProps) => {
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
@@ -344,6 +351,40 @@ export const WritingToolbar = ({
                     <span className="text-sm">设置标签</span>
                   </button>
 
+                  {/* 复制到其它积累本选项 */}
+                  {onCopyToNotebook && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowBatchDropdown(false);
+                        onCopyToNotebook();
+                      }}
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <Copy className="h-4 w-4 text-brand-crimson" />
+                      <span className="text-sm">复制到其它积累本</span>
+                    </button>
+                  )}
+
+                  {/* 移动到其它积累本选项 */}
+                  {onMoveToNotebook && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowBatchDropdown(false);
+                        onMoveToNotebook();
+                      }}
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <FolderInput className="h-4 w-4 text-brand-crimson" />
+                      <span className="text-sm">移动到其它积累本</span>
+                    </button>
+                  )}
+
                   {/* 删除选中选项 */}
                   <button
                     onClick={(e) => {
@@ -592,6 +633,40 @@ export const WritingToolbar = ({
                     <Tag className="h-4 w-4 text-blue-600" />
                     <span className="text-sm">设置标签</span>
                   </button>
+
+                  {/* 复制到其它积累本选项 */}
+                  {onCopyToNotebook && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowBatchDropdown(false);
+                        onCopyToNotebook();
+                      }}
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <Copy className="h-4 w-4 text-brand-crimson" />
+                      <span className="text-sm">复制到其它积累本</span>
+                    </button>
+                  )}
+
+                  {/* 移动到其它积累本选项 */}
+                  {onMoveToNotebook && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowBatchDropdown(false);
+                        onMoveToNotebook();
+                      }}
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <FolderInput className="h-4 w-4 text-brand-crimson" />
+                      <span className="text-sm">移动到其它积累本</span>
+                    </button>
+                  )}
 
                   {/* 删除选中选项 */}
                   <button

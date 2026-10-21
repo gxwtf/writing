@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowLeft, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { UnauthenticatedPage } from '@/components/UnauthenticatedPage';
 import { Navbar } from '@/components/Navbar';
@@ -15,8 +16,18 @@ import { generateWritingEntriesPdf } from '@/lib/writing-pdf';
 import type { WordTag, TagConfig } from '@/types/word';
 import { AIFindWordsSelector } from '@/components/AIFindWordsSelector';
 import { AIFindWordsModal } from '@/components/AIFindWordsModal';
+import { NotebookTransferDialog } from '@/components/NotebookTransferDialog';
+import { copyEntriesToNotebook, loadNotebooks, moveEntriesToNotebook } from '@/actions/notebooks';
+import type { Notebook } from '@/types/word';
 
-export function WritingPageContent() {
+interface WritingPageContentProps {
+  /** 传入时只显示该积累本内的积累（对应广学英语 AuthenticatedPage 的 wordbookId） */
+  notebookId?: number;
+  /** 积累本名称，用于标题与返回链接 */
+  notebookName?: string;
+}
+
+export function WritingPageContent({ notebookId, notebookName }: WritingPageContentProps = {}) {
   const { isLoggedIn, isClient, isLoading } = useAuth();
   const [entries, setEntries] = useState<WritingEntry[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -37,12 +48,17 @@ export function WritingPageContent() {
   const [showAIFindWordsModal, setShowAIFindWordsModal] = useState(false);
   const [aiExtractedWords, setAiExtractedWords] = useState<AIExtractedWord[]>([]);
   const [aiFindingWords, setAiFindingWords] = useState(false);
+  // 复制 / 移动到其它积累本
+  const [notebooks, setNotebooks] = useState<Notebook[]>([]);
+  const [transferMode, setTransferMode] = useState<'copy' | 'move' | null>(null);
+  const [transferring, setTransferring] = useState(false);
+  const [transferError, setTransferError] = useState<string | null>(null);
 
   // 加载数据
   const loadData = async () => {
     try {
       const [loadedEntries, loadedTagConfigs] = await Promise.all([
-        loadWritingEntries(),
+        loadWritingEntries('english', notebookId),
         loadTagConfigs()
       ]);
       setEntries(loadedEntries);
@@ -99,6 +115,7 @@ export function WritingPageContent() {
     try {
       const savedEntry = await saveWritingEntry({
         id: editingEntry?.id,
+        notebookId,
         ...data
       });
 
@@ -226,6 +243,66 @@ export function WritingPageContent() {
     }
   };
 
+  // 打开「复制 / 移动到其它积累本」弹窗（对应广学英语 handleOpenTransfer）
+  const handleOpenTransfer = async (mode: 'copy' | 'move') => {
+    if (selectedIds.length === 0) return;
+    setTransferError(null);
+    setTransferMode(mode);
+    try {
+      const list = await loadNotebooks();
+      setNotebooks(list);
+    } catch (error) {
+      console.error('加载积累本列表失败:', error);
+      setTransferError('加载积累本列表失败，请稍后重试');
+    }
+  };
+
+  const handleCloseTransfer = () => {
+    if (transferring) return;
+    setTransferMode(null);
+    setTransferError(null);
+  };
+
+  // 复制 / 移动选中积累到目标积累本（服务端自动去重）
+  const handleConfirmTransfer = async (targetNotebookIds: number[]) => {
+    if (!transferMode || targetNotebookIds.length === 0) {
+      setTransferError('请至少选择一个积累本');
+      return;
+    }
+    if (transferMode === 'move' && notebookId === undefined) {
+      setTransferError('「所有积累」视图无法确定原积累本，请进入具体积累本后再移动');
+      return;
+    }
+
+    const ids = [...selectedIds];
+    setTransferring(true);
+    setTransferError(null);
+    try {
+      let copied = 0;
+      let moved = 0;
+      for (const targetId of targetNotebookIds) {
+        if (transferMode === 'copy') {
+          const result = await copyEntriesToNotebook(targetId, ids);
+          copied += result.copied;
+        } else {
+          const result = await moveEntriesToNotebook(notebookId as number, targetId, ids);
+          moved += result.moved;
+        }
+      }
+      setTransferMode(null);
+      setSelectedIds([]);
+      await loadData();
+      const actionText = transferMode === 'copy' ? '复制' : '移动';
+      const count = transferMode === 'copy' ? copied : moved;
+      alert(`已${actionText} ${count} 条积累`);
+    } catch (error) {
+      console.error('复制/移动积累失败:', error);
+      setTransferError(error instanceof Error ? error.message : '操作失败，请稍后重试');
+    } finally {
+      setTransferring(false);
+    }
+  };
+
   // 处理标签配置更新
   const handleTagConfigUpdate = async (newTagConfigs: Record<WordTag, TagConfig>) => {
     try {
@@ -305,11 +382,22 @@ export function WritingPageContent() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        {/* 返回积累本列表（仅积累本内视图） */}
+        {notebookId !== undefined && (
+          <Link
+            href="/books"
+            className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors mb-3"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            返回我的积累本
+          </Link>
+        )}
+
         {/* 标题栏 */}
         <div className="flex items-center justify-between mb-4 sm:mb-6 gap-3">
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              我的作文积累本
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+              {notebookName || '所有积累'}
             </h1>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1 truncate">
               共 {entries.length} 个积累，{filteredEntries.length} 个符合条件
@@ -351,6 +439,8 @@ export function WritingPageContent() {
           onSetTags={() => setShowBatchTagModal(true)}
           onExportPdf={handleExportPdf}
           onAIFindWords={handleAIFindWords}
+          onCopyToNotebook={() => handleOpenTransfer('copy')}
+          onMoveToNotebook={notebookId === undefined ? undefined : () => handleOpenTransfer('move')}
         />
 
         {/* 确认删除弹窗 */}
@@ -457,6 +547,19 @@ export function WritingPageContent() {
         onClose={() => setShowAIFindWordsModal(false)}
         words={aiExtractedWords}
         isLoading={aiFindingWords}
+      />
+
+      {/* 复制/移动到其它积累本弹窗 */}
+      <NotebookTransferDialog
+        isOpen={transferMode !== null}
+        mode={transferMode ?? 'copy'}
+        notebooks={notebooks}
+        excludeNotebookId={notebookId}
+        selectedCount={selectedIds.length}
+        submitting={transferring}
+        error={transferError}
+        onClose={handleCloseTransfer}
+        onConfirm={handleConfirmTransfer}
       />
     </div>
   );

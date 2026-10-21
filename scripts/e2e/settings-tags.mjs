@@ -16,7 +16,8 @@
  * 注意：会以测试账号真实写入 TagConfig；用例结束（含失败）只删除本脚本自己建的标签。
  */
 import {
-  BASE, COOKIE_NAME, launchBrowser, loginViaSso, attachLogging, dbConnect, dbAll, shot,
+  BASE, ENTRIES, COOKIE_NAME, launchBrowser, loginViaSso, attachLogging, dbConnect, dbAll, shot,
+  waitEntriesReady,
 } from './lib.mjs';
 
 const runId = 'r' + Date.now().toString(36);
@@ -74,10 +75,7 @@ const waitDb = async (fn, { timeout = 15000, interval = 300 } = {}) => {
   }
 };
 
-const waitHome = (page) =>
-  page.waitForFunction(() => (document.body?.innerText || '').includes('我的作文积累本'), {
-    timeout: 45000,
-  });
+const waitHome = (page) => waitEntriesReady(page);
 
 const main = async () => {
   const browser = await launchBrowser();
@@ -132,7 +130,7 @@ const main = async () => {
   try {
     // 用例 1：首页导航里的「设置」入口
     await test(db, page, 'ST01', '首页导航含「设置」并进入设置中心', async () => {
-      await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.goto(ENTRIES, { waitUntil: 'domcontentloaded', timeout: 60000 });
       await waitHome(page);
       const settingsLink = page.getByRole('link', { name: /设置/ }).first();
       ok((await settingsLink.count()) > 0, '导航里找不到「设置」入口');
@@ -234,7 +232,7 @@ const main = async () => {
 
     // 用例 7：首页标签管理弹窗仍可用（设置页改动没有破坏原有入口）
     await test(db, page, 'ST07', '首页「添加积累 → 标签管理」弹窗仍可用', async () => {
-      await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.goto(ENTRIES, { waitUntil: 'domcontentloaded', timeout: 60000 });
       await waitHome(page);
       await page.getByRole('button', { name: /添加积累|^添加$/ }).first().click();
       const addDialog = page.getByRole('dialog');

@@ -20,6 +20,38 @@ model User {
 
   writingEntries WritingEntry[]
   tagConfigs     TagConfig[]
+  notebooks      Notebook[]
+}
+
+/// 积累本（一个用户可以有多个，积累条目可以在多个本之间共享）
+/// 与广学英语的 Wordbook 同构：用户级命名唯一，条目与本之间是多对多。
+model Notebook {
+  id        Int             @id @default(autoincrement())
+  userId    Int
+  name      String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  user    User            @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  entries NotebookEntry[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+/// 积累本 ↔ 作文积累 多对多关联
+model NotebookEntry {
+  id             Int      @id @default(autoincrement())
+  notebookId     Int
+  writingEntryId Int
+  createdAt      DateTime @default(now())
+
+  notebook     Notebook     @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+  writingEntry WritingEntry @relation(fields: [writingEntryId], references: [id], onDelete: Cascade)
+
+  @@unique([notebookId, writingEntryId])
+  @@index([notebookId])
+  @@index([writingEntryId])
 }
 
 /// 作文积累条目。
@@ -34,8 +66,9 @@ model WritingEntry {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  tags WritingEntryTag[]
+  user      User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  tags      WritingEntryTag[]
+  notebooks NotebookEntry[]
 
   @@index([userId])
   @@index([userId, subject])

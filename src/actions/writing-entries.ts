@@ -34,13 +34,18 @@ function toWritingEntry(entry: {
   };
 }
 
-// 加载当前用户的全部作文积累（默认只加载英语作文，为未来语文作文预留 subject）
-export async function loadWritingEntries(subject = 'english'): Promise<WritingEntry[]> {
+// 加载当前用户的作文积累（默认只加载英语作文，为未来语文作文预留 subject）
+// 传入 notebookId 时只加载该积累本内的条目（对应广学英语 loadWords(wordbookId)）
+export async function loadWritingEntries(subject = 'english', notebookId?: number): Promise<WritingEntry[]> {
   const user = await getAuthUser();
   if (!user) return [];
 
   const entries = await prisma.writingEntry.findMany({
-    where: { userId: user.userId, subject },
+    where: {
+      userId: user.userId,
+      subject,
+      ...(notebookId == null ? {} : { notebooks: { some: { notebookId } } }),
+    },
     include: {
       tags: { include: { tag: true } },
     },
@@ -57,12 +62,14 @@ export async function saveWritingEntry(data: {
   note?: string;
   tags?: string[];
   subject?: string;
+  /** 传入时把该条目加入对应积累本（对应广学英语 saveWord 的 wordbookId） */
+  notebookId?: number;
 }): Promise<WritingEntry> {
   const user = await getAuthUser();
   if (!user) throw new Error('未登录');
 
   const userId = user.userId;
-  const { id, note, tags = [], subject = 'english' } = data;
+  const { id, note, tags = [], subject = 'english', notebookId } = data;
   const contentTrimmed = data.content.replace(/\s+$/, '');
 
   if (!contentTrimmed.trim()) throw new Error('内容不能为空');
@@ -105,6 +112,27 @@ export async function saveWritingEntry(data: {
       },
     });
     entryId = created.id;
+  }
+
+  // 加入指定的积累本（同一条目可在多个本之间共享）
+  if (notebookId) {
+    const notebook = await prisma.notebook.findFirst({
+      where: { id: notebookId, userId },
+      select: { id: true },
+    });
+    if (!notebook) throw new Error('积累本不存在');
+
+    await prisma.notebookEntry.upsert({
+      where: {
+        notebookId_writingEntryId: { notebookId, writingEntryId: entryId },
+      },
+      create: { notebookId, writingEntryId: entryId },
+      update: {},
+    });
+    await prisma.notebook.update({
+      where: { id: notebookId },
+      data: { updatedAt: new Date() },
+    });
   }
 
   const result = await prisma.writingEntry.findFirstOrThrow({

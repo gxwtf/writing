@@ -1,0 +1,423 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Plus,
+  BookOpen,
+  MoreVertical,
+  Pencil,
+  Trash2,
+  Loader2,
+  ArrowRight,
+  Layers,
+  AlertCircle,
+} from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { UnauthenticatedPage } from '@/components/UnauthenticatedPage';
+import { Navbar } from '@/components/Navbar';
+import type { Notebook } from '@/types/word';
+import {
+  loadNotebooks,
+  createNotebook,
+  renameNotebook,
+  deleteNotebook,
+  previewDeleteNotebook,
+} from '@/actions/notebooks';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/**
+ * 积累本列表页，版式与交互完全照搬广学英语的 WordbookListPage：
+ * 「所有积累」入口 + 积累本卡片网格 + 新建/重命名/删除弹窗。
+ * 区别只有两点：没有「导入系统单词本」，删除弹窗会先算出会删掉/保留多少条积累。
+ */
+export function NotebookListPage() {
+  const { isLoggedIn, isClient, isLoading } = useAuth();
+  const router = useRouter();
+  const [notebooks, setNotebooks] = useState<Notebook[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Notebook | null>(null);
+  const [formName, setFormName] = useState('');
+  const [formError, setFormError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const [deleting, setDeleting] = useState<Notebook | null>(null);
+  const [deletingBusy, setDeletingBusy] = useState(false);
+  const [deletePreview, setDeletePreview] = useState<{ exclusive: number; shared: number } | null>(
+    null
+  );
+
+  const loadData = useCallback(async () => {
+    try {
+      const data = await loadNotebooks();
+      setNotebooks(data);
+    } catch (error) {
+      console.error('加载积累本失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isClient || !isLoggedIn) return;
+    loadData();
+  }, [isClient, isLoggedIn, loadData]);
+
+  const openCreate = () => {
+    setEditing(null);
+    setFormName('');
+    setFormError('');
+    setShowForm(true);
+  };
+
+  const openRename = (book: Notebook) => {
+    setEditing(book);
+    setFormName(book.name);
+    setFormError('');
+    setShowForm(true);
+  };
+
+  const handleSubmit = async () => {
+    const name = formName.trim();
+    if (!name) {
+      setFormError('请输入积累本名称');
+      return;
+    }
+    // 重名在客户端先拦一道：生产构建下 Server Action 抛出的错误文案会被 Next 抹掉
+    const duplicated = notebooks.some(
+      (book) => book.name === name && book.id !== editing?.id
+    );
+    if (duplicated) {
+      setFormError('已存在同名积累本');
+      return;
+    }
+    setSaving(true);
+    setFormError('');
+    try {
+      if (editing) {
+        await renameNotebook(editing.id, name);
+      } else {
+        await createNotebook(name);
+      }
+      setShowForm(false);
+      await loadData();
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : '操作失败，请重试');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // 打开删除弹窗前，先算清楚会删掉多少条、保留多少条（这是比广学英语多出来的提示）
+  const openDelete = async (book: Notebook) => {
+    setDeleting(book);
+    setDeletePreview(null);
+    try {
+      const preview = await previewDeleteNotebook(book.id);
+      setDeletePreview({ exclusive: preview.exclusive, shared: preview.shared });
+    } catch (error) {
+      console.error('统计积累本内容失败:', error);
+      setDeletePreview(null);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleting) return;
+    setDeletingBusy(true);
+    try {
+      await deleteNotebook(deleting.id);
+      setDeleting(null);
+      setDeletePreview(null);
+      await loadData();
+    } catch (error) {
+      console.error('删除积累本失败:', error);
+    } finally {
+      setDeletingBusy(false);
+    }
+  };
+
+  if (!isClient || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-gray-500 dark:text-gray-400">加载中...</div>
+      </div>
+    );
+  }
+
+  if (!isLoggedIn) {
+    return <UnauthenticatedPage />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Navbar currentPage="books" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        {/* 标题栏 */}
+        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-3">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+              我的积累本
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1 truncate">
+              共 {notebooks.length} 个积累本
+            </p>
+          </div>
+
+          <button
+            onClick={openCreate}
+            className="bg-gradient-to-r from-brand-crimson to-brand-deep-red hover:from-brand-red hover:to-brand-deep-red text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 transition-all shadow-lg hover:shadow-xl text-sm sm:text-base"
+          >
+            <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">新建积累本</span>
+            <span className="sm:hidden">新建</span>
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-20 text-gray-500 dark:text-gray-400">
+            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+            加载中...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              onClick={() => router.push('/books/all')}
+              data-testid="all-entries-card"
+              className="group relative bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all flex items-center"
+            >
+              <div className="flex items-center gap-3 min-w-0 w-full">
+                <div className="w-11 h-11 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
+                  <Layers className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">所有积累</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">汇总全部积累</p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-brand-crimson transition-colors" />
+              </div>
+            </div>
+
+            {notebooks.length === 0 && (
+              <div
+                onClick={openCreate}
+                className="bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all flex flex-col items-center justify-center text-center min-h-[120px]"
+              >
+                <BookOpen className="h-8 w-8 text-gray-300 dark:text-gray-600 mb-2" />
+                <p className="text-sm text-gray-500 dark:text-gray-400">还没有积累本，点击创建</p>
+              </div>
+            )}
+
+            {notebooks.map((book) => (
+              <div
+                key={book.id}
+                onClick={() => router.push(`/books/${book.id}`)}
+                data-testid="notebook-card"
+                data-notebook-name={book.name}
+                className="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-11 h-11 rounded-lg bg-red-50 dark:bg-red-900/40 flex items-center justify-center shrink-0">
+                      <BookOpen className="h-5 w-5 text-brand-crimson dark:text-red-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-gray-900 dark:text-white truncate">
+                        {book.name}
+                      </h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        {book.entryCount} 条积累
+                      </p>
+                    </div>
+                  </div>
+
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+                          aria-label={`更多操作 ${book.name}`}
+                          data-testid="notebook-menu-trigger"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-36">
+                        <DropdownMenuItem onClick={() => openRename(book)}>
+                          <Pencil className="h-4 w-4" />
+                          <span>重命名</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem variant="destructive" onClick={() => openDelete(book)}>
+                          <Trash2 className="h-4 w-4" />
+                          <span>删除</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+
+                {book.previewEntries.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 mt-4 min-h-[26px]">
+                    {book.previewEntries.map((text, index) => (
+                      <span
+                        key={`${book.id}-${index}`}
+                        className="max-w-full text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 truncate"
+                      >
+                        {text}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 min-h-[26px]">
+                    暂无积累
+                  </p>
+                )}
+
+                <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+                  <span className="text-xs text-gray-400 dark:text-gray-500">
+                    更新于 {formatDate(book.updatedAt)}
+                  </span>
+                  <span className="text-xs text-brand-crimson dark:text-red-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    进入
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 新建/重命名弹窗 */}
+      <Dialog open={showForm} onOpenChange={(open) => !saving && setShowForm(open)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{editing ? '重命名积累本' : '新建积累本'}</DialogTitle>
+          </DialogHeader>
+          <div className="py-2 space-y-3">
+            <Input
+              autoFocus
+              value={formName}
+              onChange={(e) => {
+                setFormName(e.target.value);
+                setFormError('');
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !saving) handleSubmit();
+              }}
+              placeholder="请输入积累本名称，例如：语文作文素材"
+              maxLength={50}
+              data-testid="notebook-name-input"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              同名积累本已存在时会提示改名；每条积累可以同时放进多个积累本。
+            </p>
+            {formError && <p className="text-sm text-red-600 dark:text-red-400">{formError}</p>}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowForm(false)} disabled={saving}>
+              取消
+            </Button>
+            <Button onClick={handleSubmit} disabled={saving} data-testid="notebook-submit">
+              {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {editing ? '保存' : '创建'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 删除确认弹窗（带条目数提示） */}
+      <Dialog
+        open={!!deleting}
+        onOpenChange={(open) => {
+          if (!open && !deletingBusy) {
+            setDeleting(null);
+            setDeletePreview(null);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>删除积累本</DialogTitle>
+          </DialogHeader>
+          <div className="py-2 space-y-3">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              确定要删除「{deleting?.name}」吗？
+            </p>
+
+            {deletePreview === null ? (
+              <p className="text-xs text-gray-500 dark:text-gray-400">正在统计本内积累...</p>
+            ) : deletePreview.exclusive === 0 && deletePreview.shared === 0 ? (
+              <p className="text-sm text-gray-600 dark:text-gray-400">该积累本是空的，删除不影响任何积累。</p>
+            ) : (
+              <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-3">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <div className="text-sm text-amber-800 dark:text-amber-300 space-y-1">
+                    {deletePreview.exclusive > 0 && (
+                      <p>
+                        仅属于该本的 <strong>{deletePreview.exclusive}</strong> 条积累将被
+                        <strong>一并删除且不可恢复</strong>。
+                      </p>
+                    )}
+                    {deletePreview.shared > 0 && (
+                      <p>
+                        另有 <strong>{deletePreview.shared}</strong> 条积累同时存在于其它积累本，只解除关联、不会丢失。
+                      </p>
+                    )}
+                    {deletePreview.exclusive > 0 && (
+                      <p className="text-xs">如果这些积累还想保留，请先取消删除，进入本内把它们移动到其它积累本。</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleting(null);
+                setDeletePreview(null);
+              }}
+              disabled={deletingBusy}
+            >
+              取消
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deletingBusy}
+              data-testid="notebook-delete-confirm"
+            >
+              {deletingBusy && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              确认删除
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

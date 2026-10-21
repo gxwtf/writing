@@ -12,9 +12,9 @@
  */
 import { writeFileSync, statSync } from 'node:fs';
 import {
-  BASE, ACCOUNT, SYSTEM, COOKIE_NAME, creds,
+  BASE, ENTRIES, ACCOUNT, SYSTEM, COOKIE_NAME, creds,
   launchBrowser, newContextWithCookies, loginViaSso, attachLogging,
-  waitAppReady, readCounts, cards, cardByText, cardTexts,
+  waitAppReady, waitEntriesReady, readCounts, cards, cardByText, cardTexts,
   shot, dbConnect, dbAll, dbOne,
 } from './lib.mjs';
 
@@ -364,7 +364,7 @@ async function main() {
     await waitAppReady(anon);
     ok(await anon.getByText(/收藏好句好段/).first().isVisible(), '未显示副标题「收藏好句好段…」');
     ok(await anon.getByRole('button', { name: '使用广学账号登录' }).isVisible(), '未显示「使用广学账号登录」按钮');
-    eq(await anon.getByRole('heading', { name: '我的作文积累本' }).count(), 0, '未登录页不应出现「我的作文积累本」');
+    eq(await anon.getByRole('button', { name: /打开我的积累本/ }).count(), 0, '未登录页不应出现「打开我的积累本」按钮');
     eq(await cards(anon).count(), 0, '未登录页不应出现作文卡片');
   });
 
@@ -397,9 +397,9 @@ async function main() {
 
   await test('A4', 'SSO 登录后进入列表并显示用户信息', async () => {
     shotPage = page;
-    await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.goto(ENTRIES, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await waitAppReady(page);
-    await page.getByRole('heading', { name: '我的作文积累本' }).waitFor({ timeout: 30000 });
+    await waitEntriesReady(page);
     ok(await page.getByText('小广_2').first().isVisible(), '导航未显示登录用户名');
     const u = await dbOne(db, 'select id, "userId", "userName" from "User" where "userId" = $1', [userId]);
     ok(u, 'User 表未创建该账号行');
@@ -1069,9 +1069,9 @@ async function main() {
     })));
     const p = await mCtx.newPage();
     shotPage = p;
-    await p.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await p.goto(ENTRIES, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await waitAppReady(p);
-    await p.getByRole('heading', { name: '我的作文积累本' }).waitFor({ timeout: 30000 });
+    await waitEntriesReady(p);
     ok(await p.locator('#writing-search-mobile').isVisible(), '移动端搜索框不可见');
     ok(await p.getByRole('button', { name: /^添加$/ }).first().isVisible(), '移动端添加按钮不可见');
     ok(await p.getByRole('button', { name: '批量操作' }).first().isVisible(), '移动端批量操作按钮不可见');
