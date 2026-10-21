@@ -130,6 +130,8 @@ const navToBooks = async (page) => {
   await page.goto(`${BASE}/books`, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await waitAppReady(page);
   await page.locator('h1').filter({ hasText: '我的积累本' }).waitFor({ timeout: 30000 });
+  // 卡片区在 loadNotebooks 返回后才渲染，等它就绪再断言
+  await page.getByTestId('all-entries-card').waitFor({ state: 'visible', timeout: 30000 });
 };
 
 const bookCard = (page, name) => page.locator(`[data-notebook-name="${name}"]`);

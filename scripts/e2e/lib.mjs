@@ -15,6 +15,8 @@ import pg from 'pg';
 import { chromium } from 'playwright';
 
 export const BASE = process.env.E2E_BASE || 'https://writing.gxwtf.cn';
+/** 所有积累列表页（首页改成每日一句之后，列表入口在这里） */
+export const ENTRIES = `${BASE}/books/all`;
 export const ACCOUNT = process.env.GXACCOUNT_URL || 'https://account.gxwtf.cn';
 export const SYSTEM = new URL(BASE).hostname; // writing.gxwtf.cn
 export const COOKIE_NAME = 'gxwtf_iron_auth';
@@ -233,11 +235,26 @@ export async function dbOne(db, sql, params = []) {
 
 /** 等待应用完成鉴权与首屏渲染（已登录或未登录皆可） */
 export async function waitAppReady(page, { timeout = 45000 } = {}) {
+  // 已登录：任一页面都有导航「登出」；移动端导航会隐藏文字，所以同时认页面特征
   await page.waitForFunction(
     () => {
       const t = document.body?.innerText || '';
-      return t.includes('我的作文积累本') || t.includes('使用广学账号登录');
+      return (
+        t.includes('登出') ||
+        t.includes('使用广学账号登录') ||
+        t.includes('打开我的积累本') ||
+        t.includes('我的积累本') ||
+        t.includes('所有积累')
+      );
     },
+    { timeout }
+  );
+}
+
+/** 等待「所有积累」列表页就绪 */
+export async function waitEntriesReady(page, { timeout = 45000 } = {}) {
+  await page.waitForFunction(
+    () => (document.body?.innerText || '').includes('所有积累'),
     { timeout }
   );
 }
