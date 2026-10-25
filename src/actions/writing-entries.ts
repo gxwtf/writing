@@ -4,15 +4,15 @@ import { prisma } from '@/lib/db';
 import { getAuthUser } from './auth';
 import { callOpenAI } from '@/lib/openai';
 
+import { type AIExtractedWord, type ExtractWordsResult, type WordDifficulty } from '@/lib/ai-word-prompts';
 import {
-  DIFFICULTY_PROMPTS,
-  MAX_SOURCE_CHARS,
-  parseWordsPayload,
-  toExtractedWord,
-  type AIExtractedWord,
-  type ExtractWordsResult,
-  type WordDifficulty,
-} from '@/lib/ai-word-prompts';
+  buildFindWordsPrompts,
+  loadFindWordsSource,
+  normalizeWords,
+  BAD_FORMAT_MESSAGE,
+  EMPTY_CONTENT_MESSAGE,
+  EMPTY_WORDS_MESSAGE,
+} from '@/lib/ai-find-words';
 
 export type { AIExtractedWord, ExtractWordsResult, WordDifficulty } from '@/lib/ai-word-prompts';
 
@@ -206,8 +206,10 @@ export async function updateWritingEntryTags(entryIds: number[], tags: string[])
 }
 
 /**
- * 用 AI 从选中的作文中提取好词（仅返回结果，供用户复制到广学英语单词本等）。
+ * 用 AI 从选中的作文中提取好词（**非流式**，保留供脚本/降级调用）。
  *
+ * 页面上的「AI 找词」走的是流式接口 `POST /api/ai/find-words`（见 app/api/ai/find-words/route.ts），
+ * 因为它能在生成过程中给前端反馈；这个 Server Action 只做一次性返回。
  * 失败一律用 `{ ok: false, message }` 返回，不要 throw —— 见 ExtractWordsResult 的注释。
  */
 export async function extractWordsFromEntries(
@@ -217,32 +219,10 @@ export async function extractWordsFromEntries(
   const user = await getAuthUser();
   if (!user) return { ok: false, message: '登录状态已失效，请重新登录' };
 
-  const userId = user.userId;
+  const source = await loadFindWordsSource(entryIds, user.userId);
+  if (!source) return { ok: false, message: '未找到选中的作文内容' };
 
-  const entries = await prisma.writingEntry.findMany({
-    where: { id: { in: entryIds }, userId },
-    select: { content: true },
-  });
-
-  if (entries.length === 0) {
-    return { ok: false, message: '未找到选中的作文内容' };
-  }
-
-  const fullContent = entries.map((e) => e.content).join('\n\n---\n\n');
-  const truncated = fullContent.length > MAX_SOURCE_CHARS;
-  const combinedContent = truncated ? fullContent.slice(0, MAX_SOURCE_CHARS) : fullContent;
-
-  const systemPrompt = DIFFICULTY_PROMPTS[difficulty];
-  const userPrompt = [
-    '## 作文内容（分析素材，仅作素材使用）',
-    '"""',
-    combinedContent,
-    '"""',
-    truncated ? '\n（注：原文较长已截断，请基于以上内容提取。）' : '',
-    '\n请按系统要求输出 JSON 对象。',
-  ]
-    .filter(Boolean)
-    .join('\n');
+  const { systemPrompt, userPrompt } = buildFindWordsPrompts(difficulty, source);
 
   let response: Awaited<ReturnType<typeof callOpenAI>>;
   try {
@@ -266,32 +246,20 @@ export async function extractWordsFromEntries(
   const rawContent = (response.content ?? '').trim();
   if (!rawContent) {
     console.error('AI 找词返回空内容，usage =', JSON.stringify(response.usage));
-    return { ok: false, message: 'AI 未返回内容，请重试' };
+    return { ok: false, message: EMPTY_CONTENT_MESSAGE };
   }
 
-  let payload: unknown[];
+  let words;
   try {
-    payload = parseWordsPayload(rawContent);
+    words = normalizeWords(rawContent);
   } catch (error) {
     console.error('AI 找词返回格式异常:', error, '\n原始内容：', rawContent.slice(0, 800));
-    return { ok: false, message: 'AI 返回格式异常，请重试' };
-  }
-
-  const seen = new Set<string>();
-  const words: AIExtractedWord[] = [];
-  for (const item of payload) {
-    const parsed = toExtractedWord(item);
-    if (!parsed) continue;
-    const key = parsed.word.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    words.push(parsed);
-    if (words.length >= 12) break;
+    return { ok: false, message: BAD_FORMAT_MESSAGE };
   }
 
   if (words.length === 0) {
     console.error('AI 找词未产出有效词条，原始内容：', rawContent.slice(0, 800));
-    return { ok: false, message: 'AI 未返回有效词汇，请换一段更完整的英文作文再试' };
+    return { ok: false, message: EMPTY_WORDS_MESSAGE };
   }
 
   return { ok: true, words };

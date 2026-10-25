@@ -392,3 +392,80 @@ export async function callOpenAIWithTools(
     },
   });
 }
+
+// ===== 流式调用（SSE）=====
+
+export interface StreamCallOptions {
+  temperature?: number;
+  response_format?: { type: 'json_object' };
+  configs?: ModelConfig[];
+}
+
+export interface StreamCallResult {
+  /** 上游的原始流式响应（SSE），调用方负责读取与关闭 */
+  response: Response;
+  config: ModelConfig;
+}
+
+/**
+ * 以 `stream: true` 调用模型，返回**未消费**的原始 Response。
+ *
+ * 与 `callOpenAI` 的区别：这里不做整包解析，交给调用方边读边转发，
+ * 这样前端可以立刻看到首个 token，不必等整段生成完（也避免长生成被网关整包超时掐断）。
+ * 多模型降级时，只有「建连阶段」失败才会换下一个模型；一旦开始出流就不再切换。
+ */
+export async function streamChatCompletion(
+  systemPrompt: string,
+  userPrompt: string,
+  options: StreamCallOptions = {}
+): Promise<StreamCallResult> {
+  const configs = await resolveModelConfigs(options.configs);
+  if (configs.length === 0) {
+    throw new Error('未配置任何文本模型（LLM_CONFIGS 为空或解析失败）');
+  }
+
+  const { temperature = 0.3, response_format } = options;
+  let lastError: Error | null = null;
+
+  for (const config of configs) {
+    if (!config.apiKey) {
+      console.warn(`流式模型 ${config.name} 未配置 API Key，跳过`);
+      continue;
+    }
+
+    const body: Record<string, unknown> = {
+      model: config.model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature,
+      stream: true,
+    };
+    if (response_format) body.response_format = response_format;
+
+    try {
+      const response = await fetch(`${config.apiBase}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${config.apiKey}`,
+          Accept: 'text/event-stream',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok || !response.body) {
+        const errorText = await response.text().catch(() => '');
+        throw new Error(`API 请求失败：${response.status} ${response.statusText} - ${errorText.slice(0, 300)}`);
+      }
+
+      return { response, config };
+    } catch (error) {
+      lastError = error as Error;
+      console.warn(`流式模型 ${config.name} 建连失败：${lastError.message.slice(0, 200)}`);
+    }
+  }
+
+  throw lastError || new Error('所有模型调用失败');
+}
