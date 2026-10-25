@@ -16,7 +16,7 @@ const difficultyOptions: { id: WordDifficulty; title: string; description: strin
   {
     id: 'replace',
     title: '常用单词替换词',
-    description: '用高级词汇替换基础词汇，提升作文表达丰富度',
+    description: '挑出原文里的好词，看它能替换掉哪些你常用的简单词',
     icon: ArrowUpDown,
     colorClasses: {
       selectedBorder: 'border-blue-500 dark:border-blue-400',
