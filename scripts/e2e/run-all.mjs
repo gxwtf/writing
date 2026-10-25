@@ -15,7 +15,7 @@ import {
   BASE, ENTRIES, ACCOUNT, SYSTEM, COOKIE_NAME, creds,
   launchBrowser, newContextWithCookies, loginViaSso, attachLogging,
   waitAppReady, waitEntriesReady, readCounts, cards, cardByText, cardTexts,
-  shot, dbConnect, dbAll, dbOne,
+  shot, dbConnect, dbAll, dbOne, cleanupTestUserData,
 } from './lib.mjs';
 
 // ---------------------------------------------------------------- 全局状态
@@ -1123,6 +1123,23 @@ try {
   console.error('\n[FATAL] 测试流程异常终止:', e);
   exitCode = 2;
 } finally {
+  // 自动清理：只清本次运行在测试账号下写进去的数据（详见 cleanupTestUserData 注释）。
+  // 需要排查现场时用 E2E_KEEP_DATA=1 跳过；换测试账号后想连历史一起清用 E2E_CLEAN_ALL=1。
+  let cleanup = null;
+  if (db && userId) {
+    try {
+      cleanup = await cleanupTestUserData(db, userId, RUN_START);
+      const skipped = cleanup.skipped ? `（跳过：${cleanup.skipped}）` : '';
+      console.log(
+        `\n清理测试账号数据${skipped}：作文 ${cleanup.entries} / 积累本 ${cleanup.notebooks} / ` +
+        `标签配置 ${cleanup.tagConfigs} / 全局标签 ${cleanup.tags}`
+      );
+    } catch (e) {
+      cleanup = { error: e.message };
+      console.error('\n清理测试账号数据失败（不影响测试结论）:', e.message);
+    }
+  }
+
   // 汇总
   const passed = results.filter((r) => r.status === 'PASS').length;
   const failed = results.filter((r) => r.status === 'FAIL').length;
@@ -1130,7 +1147,7 @@ try {
     runId, startedAt: RUN_START, finishedAt: new Date().toISOString(),
     base: BASE, system: SYSTEM, userId, credsUser: creds().identifier,
     baseline, summary: { total: results.length, passed, failed }, results,
-    logs: logs.slice(0, 200), alerts,
+    logs: logs.slice(0, 200), alerts, cleanup,
     screenshotsDir: '/tmp', pdfPath: '/tmp/e2e-writing-export.pdf',
   };
   try {
