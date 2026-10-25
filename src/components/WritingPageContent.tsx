@@ -10,12 +10,11 @@ import { WritingToolbar } from '@/components/WritingToolbar';
 import { WritingEntryCard } from '@/components/WritingEntryCard';
 import { WritingEntryModal } from '@/components/WritingEntryModal';
 import { BatchTagModal } from '@/components/BatchTagModal';
-import { WritingEntry, loadWritingEntries, saveWritingEntry, deleteWritingEntries, updateWritingEntryTags, extractWordsFromEntries, WordDifficulty, AIExtractedWord } from '@/actions/writing-entries';
+import { WritingEntry, loadWritingEntries, saveWritingEntry, deleteWritingEntries, updateWritingEntryTags } from '@/actions/writing-entries';
 import { loadTagConfigs, saveTagConfigs } from '@/actions/tags';
 import { generateWritingEntriesPdf } from '@/lib/writing-pdf';
 import type { WordTag, TagConfig } from '@/types/word';
-import { AIFindWordsSelector } from '@/components/AIFindWordsSelector';
-import { AIFindWordsModal } from '@/components/AIFindWordsModal';
+import { AIFindWordsDialog } from '@/components/AIFindWordsDialog';
 import { NotebookTransferDialog } from '@/components/NotebookTransferDialog';
 import { copyEntriesToNotebook, loadNotebooks, moveEntriesToNotebook } from '@/actions/notebooks';
 import type { Notebook } from '@/types/word';
@@ -44,10 +43,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
   const [rangeSelectMode, setRangeSelectMode] = useState(false);
   const rangeFirstEndpoint = useRef<number | null>(null);
   const rangeSelectModeRef = useRef(false);
-  const [showAIFindWordsSelector, setShowAIFindWordsSelector] = useState(false);
-  const [showAIFindWordsModal, setShowAIFindWordsModal] = useState(false);
-  const [aiExtractedWords, setAiExtractedWords] = useState<AIExtractedWord[]>([]);
-  const [aiFindingWords, setAiFindingWords] = useState(false);
+  const [showAIFindWords, setShowAIFindWords] = useState(false);
   // 复制 / 移动到其它积累本
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
   const [transferMode, setTransferMode] = useState<'copy' | 'move' | null>(null);
@@ -334,38 +330,13 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
     }
   };
 
-  // 处理AI找词
+  // 处理AI找词：难度选择 → 生成过程 → 结果，全部在同一弹窗内完成
   const handleAIFindWords = () => {
     if (selectedIds.length === 0) {
       alert('请先选择要分析的作文');
       return;
     }
-    setShowAIFindWordsSelector(true);
-  };
-
-  // 处理选择难度后开始AI找词
-  const handleStartAIFindWords = async (difficulty: WordDifficulty) => {
-    setShowAIFindWordsSelector(false);
-    setAiFindingWords(true);
-
-    try {
-      // Server Action 不抛异常，用结构化结果回传失败原因：
-      // Next.js 生产构建会把 action 抛出的错误脱敏成 "Minified React error #xxx"，
-      // 直接读 error.message 用户看不到任何有用信息。
-      const result = await extractWordsFromEntries(selectedIds, difficulty);
-      if (!result.ok) {
-        alert(`AI找词失败：${result.message}`);
-        return;
-      }
-      setAiExtractedWords(result.words);
-      setShowAIFindWordsModal(true);
-    } catch (error) {
-      // 走到这里通常是网络中断 / action 未部署等异常情况
-      console.error('AI找词失败:', error);
-      alert('AI找词失败，请重试');
-    } finally {
-      setAiFindingWords(false);
-    }
+    setShowAIFindWords(true);
   };
 
   // 加载中状态
@@ -542,19 +513,11 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
         onTagsUpdate={handleTagConfigUpdate}
       />
 
-      {/* AI找词难度选择器 */}
-      <AIFindWordsSelector
-        isOpen={showAIFindWordsSelector}
-        onClose={() => setShowAIFindWordsSelector(false)}
-        onSelect={handleStartAIFindWords}
-      />
-
-      {/* AI找词结果弹窗 */}
-      <AIFindWordsModal
-        isOpen={showAIFindWordsModal}
-        onClose={() => setShowAIFindWordsModal(false)}
-        words={aiExtractedWords}
-        isLoading={aiFindingWords}
+      {/* AI 找词（难度选择 / 生成过程 / 结果 同一个弹窗） */}
+      <AIFindWordsDialog
+        isOpen={showAIFindWords}
+        onClose={() => setShowAIFindWords(false)}
+        entryIds={selectedIds}
       />
 
       {/* 复制/移动到其它积累本弹窗 */}
