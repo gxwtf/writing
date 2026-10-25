@@ -18,7 +18,8 @@ export const BASE = process.env.E2E_BASE || 'https://writing.gxwtf.cn';
 /** 所有积累列表页（首页改成每日一句之后，列表入口在这里） */
 export const ENTRIES = `${BASE}/books/all`;
 export const ACCOUNT = process.env.GXACCOUNT_URL || 'https://account.gxwtf.cn';
-export const SYSTEM = new URL(BASE).hostname; // writing.gxwtf.cn
+// 用 host（含端口）而不是 hostname：本地隔离副本是 127.0.0.1:3006，纯 hostname 会把端口丢掉
+export const SYSTEM = new URL(BASE).host; // writing.gxwtf.cn
 export const COOKIE_NAME = 'gxwtf_iron_auth';
 export const BROWSER_PATH = process.env.E2E_BROWSER || '/usr/bin/microsoft-edge';
 
@@ -70,6 +71,9 @@ function makeJar() {
 }
 
 function httpsify(url) {
+  // 本地隔离副本（http://127.0.0.1:3006 之类）没有 TLS，强制 https 会直接 TLS 握手失败；
+  // 本地联调回归时设置 E2E_HTTP_OK=1 关掉这层提升。
+  if (process.env.E2E_HTTP_OK === '1') return url;
   return url.startsWith('http://') ? 'https://' + url.slice(7) : url;
 }
 
@@ -124,7 +128,7 @@ export async function loginViaSso({ identifier, password, system = SYSTEM, back 
   let callback = m ? m[1] : null;
   if (!callback) {
     const t = handoff.match(/token=([A-Za-z0-9._-]+)/);
-    if (t) callback = `https://${system}/sso/callback?back=${encodeURIComponent(back)}&token=${t[1]}`;
+    if (t) callback = `${new URL(BASE).origin}/sso/callback?back=${encodeURIComponent(back)}&token=${t[1]}`;
   }
   if (!callback) throw new Error('SSO 交接页未找到回调 token');
 
@@ -139,8 +143,10 @@ export async function loginViaSso({ identifier, password, system = SYSTEM, back 
     break;
   }
 
+  // cookie jar 里只存 hostname（不含端口），所以比较时要去掉 system 的端口
+  const appHost = new URL(BASE).hostname;
   const appCookies = jar.all().filter(
-    (c2) => c2.host === system && c2.name === COOKIE_NAME
+    (c2) => c2.host === appHost && c2.name === COOKIE_NAME
   );
   if (appCookies.length === 0) {
     const names = jar.all().map((c2) => `${c2.host}/${c2.name}`).join(', ');
