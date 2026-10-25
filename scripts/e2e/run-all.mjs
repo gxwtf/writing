@@ -400,10 +400,12 @@ async function main() {
     await page.goto(ENTRIES, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await waitAppReady(page);
     await waitEntriesReady(page);
-    ok(await page.getByText('小广_2').first().isVisible(), '导航未显示登录用户名');
+    // 测试账号来自 creds.json / GX_IDENT，不要硬编码用户名（账号会换）
+    const expectedUser = creds().identifier;
+    ok(await page.getByText(expectedUser).first().isVisible(), '导航未显示登录用户名');
     const u = await dbOne(db, 'select id, "userId", "userName" from "User" where "userId" = $1', [userId]);
     ok(u, 'User 表未创建该账号行');
-    eq(u.userName, '小广_2', 'User.userName 不一致');
+    eq(u.userName, expectedUser, 'User.userName 不一致');
   });
 
   await test('B1', '列表加载与计数和数据库一致', async () => {

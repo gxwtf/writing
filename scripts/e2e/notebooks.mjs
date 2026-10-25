@@ -150,7 +150,7 @@ const main = async () => {
   const mintUserId = process.env.E2E_MINT_USER_ID ? Number(process.env.E2E_MINT_USER_ID) : null;
   if (mintUserId) {
     userId = mintUserId;
-    cookies = [await mintSessionCookie(mintUserId, process.env.E2E_MINT_USER_NAME || '小广_2')];
+    cookies = [await mintSessionCookie(mintUserId, process.env.E2E_MINT_USER_NAME || 'mint-test-user')];
     console.log('使用自签会话 Cookie，userId =', userId);
   } else {
     ({ userId, cookies } = await loginViaSso());
