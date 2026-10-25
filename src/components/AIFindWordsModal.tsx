@@ -9,7 +9,6 @@ import {
   ClipboardList,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +26,13 @@ interface AIFindWordsModalProps {
  *
  * 作文积累本独立后不再直接写入广学英语单词本，这里只负责展示与复制，
  * 用户可把结果粘贴到广学英语的「批量添加单词」中使用。
+ *
+ * 样式注意（2026-10 积累本 UI 改版后统一为赤诚红品牌色）：
+ * - 徽标必须用 `variant="selected"`（无内置样式）+ 显式配色：`secondary` 变体的
+ *   `bg-secondary` 会在 CSS 里盖掉 className 里的 bg-*，导致「代替 X」「高考高频」
+ *   「领域」三种徽标渲染成同一个浅粉色，读者分不清。
+ * - 底部栏在小屏改为纵向排列：旧版横排时「已选择 N 个单词」被挤成一列竖字。
+ * - 正文区限制高度并自行滚动，避免长词表把弹窗撑出屏幕。
  */
 export const AIFindWordsModal = ({
   isOpen,
@@ -80,61 +86,74 @@ export const AIFindWordsModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden" showCloseButton={false}>
-        <div className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center text-white">
+      <DialogContent
+        className="flex max-h-[calc(100dvh-2rem)] max-w-[calc(100%-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
+        showCloseButton={false}
+      >
+        <div className="flex items-start justify-between gap-3 border-b border-gray-200 bg-purple-50/70 p-5 dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500 text-white">
               <Sparkles className="h-5 w-5" />
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <div className="min-w-0">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white sm:text-xl">
                 AI 找词结果
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-0.5 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
                 {isLoading
                   ? '正在分析作文...'
                   : `共找到 ${words.length} 个好词，已选择 ${selectedIndices.length} 个`}
               </p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="p-2 h-9 w-9 shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            aria-label="关闭"
+            className="h-9 w-9 shrink-0 p-2"
+          >
             <X className="h-5 w-5" />
           </Button>
         </div>
 
-        <div className="overflow-auto p-6 space-y-4 max-h-[calc(90vh-200px)]">
+        {/* 正文用原生滚动容器 + 明确的 max-height：ScrollArea 的 viewport 在 flex 容器里
+            量不到可用高度（clientHeight 会被内容撑开），会把卡片顶到页脚外面去 */}
+        <div className="max-h-[calc(100dvh-15rem)] overflow-y-auto p-4 sm:p-6">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-purple-500 mb-4" />
+              <Loader2 className="mb-4 h-8 w-8 animate-spin text-purple-600" />
               <p className="text-gray-600 dark:text-gray-400">AI 正在分析作文内容...</p>
             </div>
           ) : words.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <p className="text-gray-600 dark:text-gray-400">未找到合适的单词</p>
             </div>
           ) : (
-            <>
-              <div className="flex items-center justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-3">
                 <button
+                  type="button"
                   onClick={toggleSelectAll}
-                  className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                 >
                   <Checkbox checked={selectedIndices.length === words.length} onCheckedChange={toggleSelectAll} />
-                  <span>{selectedIndices.length === words.length ? '取消全选' : '全选'}</span>
+                  <span className="whitespace-nowrap">
+                    {selectedIndices.length === words.length ? '取消全选' : '全选'}
+                  </span>
                 </button>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <span className="whitespace-nowrap text-sm tabular-nums text-gray-500 dark:text-gray-400">
                   {selectedIndices.length} / {words.length}
                 </span>
               </div>
 
-              <ScrollArea className="h-80">
-                <div className="space-y-3 pr-2">
+              <div className="space-y-3">
                   {words.map((word, index) => (
                     <div
                       key={index}
-                      className={`p-4 rounded-xl border ${
+                      className={`rounded-xl border p-4 transition-colors ${
                         selectedIndices.includes(index)
-                          ? 'border-purple-300 bg-purple-50/50 dark:border-purple-700 dark:bg-purple-900/20'
+                          ? 'border-blue-300 bg-blue-50/60 dark:border-blue-700 dark:bg-blue-900/20'
                           : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
                       }`}
                     >
@@ -142,37 +161,49 @@ export const AIFindWordsModal = ({
                         <Checkbox
                           checked={selectedIndices.includes(index)}
                           onCheckedChange={() => toggleSelect(index)}
-                          className="mt-1"
+                          className="mt-1 shrink-0"
                         />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-lg text-gray-900 dark:text-white">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className="text-base font-bold break-words text-gray-900 dark:text-white sm:text-lg">
                               {word.word}
                             </span>
-                            <Badge variant="outline" className="text-xs">
+                            <Badge
+                              variant="selected"
+                              className="border-gray-300 bg-gray-100 text-xs text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                            >
                               {word.type}
                             </Badge>
                             {word.replaceWord && (
-                              <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                                替换: {word.replaceWord}
+                              <Badge
+                                variant="selected"
+                                className="border-blue-200 bg-blue-50 text-xs text-blue-700 dark:border-blue-800 dark:bg-blue-900/40 dark:text-blue-200"
+                              >
+                                代替 {word.replaceWord}
                               </Badge>
                             )}
                             {word.difficultyTag && (
-                              <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300">
+                              <Badge
+                                variant="selected"
+                                className="border-amber-200 bg-amber-50 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
+                              >
                                 {word.difficultyTag}
                               </Badge>
                             )}
                             {word.sourceDomain && (
-                              <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300">
+                              <Badge
+                                variant="selected"
+                                className="border-indigo-200 bg-indigo-50 text-xs text-indigo-800 dark:border-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200"
+                              >
                                 {word.sourceDomain}
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 break-words">
+                          <p className="mt-2 text-sm leading-relaxed break-words text-gray-700 dark:text-gray-200">
                             {word.meaning}
                           </p>
                           {word.sentence && (
-                            <p className="text-sm text-gray-500 dark:text-gray-500 mt-2 italic break-words">
+                            <p className="mt-2 text-sm leading-relaxed break-words text-gray-600 italic dark:text-gray-400">
                               例句: {word.sentence}
                             </p>
                           )}
@@ -181,21 +212,20 @@ export const AIFindWordsModal = ({
                     </div>
                   ))}
                 </div>
-              </ScrollArea>
-            </>
+            </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between p-6 border-t border-gray-200 dark:border-gray-700 gap-3">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex flex-col gap-3 border-t border-gray-200 p-4 dark:border-gray-700 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
             已选择 {selectedIndices.length} 个单词
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Button
               variant="outline"
               onClick={handleCopyWords}
               disabled={selectedWords.length === 0}
-              className="flex items-center gap-2"
+              className="w-full sm:w-auto"
             >
               {copiedWords ? (
                 <><Check className="h-4 w-4" /> 已复制</>
@@ -206,7 +236,7 @@ export const AIFindWordsModal = ({
             <Button
               onClick={handleCopyDetail}
               disabled={selectedWords.length === 0}
-              className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600"
+              className="w-full border-0 bg-gradient-to-r from-brand-crimson to-brand-deep-red text-white shadow-lg transition-all hover:from-brand-red hover:to-brand-deep-red hover:shadow-xl sm:w-auto"
             >
               {copied ? (
                 <><Check className="h-4 w-4" /> 已复制</>

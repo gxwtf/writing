@@ -231,6 +231,73 @@ export async function dbOne(db, sql, params = []) {
   return rows[0] ?? null;
 }
 
+// ---------------------------------------------------------------- 测试数据清理
+
+/**
+ * 清理「测试账号」在本次回归跑出来的数据。
+ *
+ * 设计取舍（重要，别改成「清空该账号所有数据」）：
+ * - 只删 **本次运行开始之后创建的** 行，只会碰 `creds.json` 里那个测试账号自己的数据；
+ * - 不碰其它任何用户；`E2E_KEEP_DATA=1` 时整体跳过（排查现场用）；
+ * - 想连历史残留一起清（例如换测试账号后），显式加 `E2E_CLEAN_ALL=1`。
+ *
+ * 清理顺序：作文（级联清 WritingEntryTag / NotebookEntry）→ 积累本 → 标签配置 →
+ * 因上面删除而变成「无人引用」的全局标签。
+ *
+ * @param {import('pg').Client} db
+ * @param {number} userId 测试账号的广学 userId
+ * @param {string} since ISO 时间戳（本次运行开始时间）
+ * @returns {Promise<{entries:number,notebooks:number,tagConfigs:number,tags:number,skipped?:string}>}
+ */
+export async function cleanupTestUserData(db, userId, since) {
+  if (!userId) return { entries: 0, notebooks: 0, tagConfigs: 0, tags: 0, skipped: 'no-userId' };
+  if (process.env.E2E_KEEP_DATA === '1') return { entries: 0, notebooks: 0, tagConfigs: 0, tags: 0, skipped: 'E2E_KEEP_DATA=1' };
+
+  const cleanAll = process.env.E2E_CLEAN_ALL === '1';
+  const byTime = cleanAll ? 'true' : '"createdAt" >= $2::timestamptz';
+  const params = cleanAll ? [userId] : [userId, since];
+
+  const result = { entries: 0, notebooks: 0, tagConfigs: 0, tags: 0 };
+
+  await db.query('BEGIN');
+  try {
+    const entries = await db.query(
+      `DELETE FROM "WritingEntry" WHERE "userId" = $1 AND ${byTime} RETURNING id`,
+      params
+    );
+    result.entries = entries.rowCount ?? 0;
+
+    const notebooks = await db.query(
+      `DELETE FROM "Notebook" WHERE "userId" = $1 AND ${byTime} RETURNING id`,
+      params
+    );
+    result.notebooks = notebooks.rowCount ?? 0;
+
+    const tagConfigs = await db.query(
+      `DELETE FROM "TagConfig" WHERE "userId" = $1 AND ${cleanAll ? 'true' : '"updatedAt" >= $2::timestamptz'} RETURNING id`,
+      params
+    );
+    result.tagConfigs = tagConfigs.rowCount ?? 0;
+
+    // 测试建的全局标签：删除后已无人引用才删（不碰别人正在用的标签）。
+    // 即使 E2E_CLEAN_ALL 也只清本次运行建的标签 —— 全局 Tag 是跨用户共用的，不能一把梭。
+    const tags = await db.query(
+      `DELETE FROM "Tag" t
+        WHERE t."createdAt" >= $1::timestamptz
+          AND NOT EXISTS (SELECT 1 FROM "WritingEntryTag" x WHERE x."tagId" = t.id)
+        RETURNING id`,
+      [since]
+    );
+    result.tags = tags.rowCount ?? 0;
+
+    await db.query('COMMIT');
+  } catch (e) {
+    await db.query('ROLLBACK').catch(() => {});
+    throw e;
+  }
+  return result;
+}
+
 // ---------------------------------------------------------------- UI helpers
 
 /** 等待应用完成鉴权与首屏渲染（已登录或未登录皆可） */
