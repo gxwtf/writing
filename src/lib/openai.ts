@@ -192,6 +192,9 @@ export async function callOpenAI(
   const { prompt = '', temperature, response_format, reasoning_effort } = options;
 
   const configs = await resolveModelConfigs(options.configs);
+  if (configs.length === 0) {
+    throw new Error('未配置任何文本模型（LLM_CONFIGS 为空或解析失败）');
+  }
 
   return callWithRetry({
     configs,
@@ -212,8 +215,12 @@ export async function callOpenAI(
     },
     parseResponse: (data) => {
       const message = data.choices?.[0]?.message;
-      // 某些模型（如降级用的 reasoning 模型）会返回空 content，把内容放在 reasoning 字段
-      const content = (message?.content || '').trim() || message?.reasoning || message?.reasoning_content || '';
+      let content = (message?.content || '').trim();
+      // 某些模型（如降级用的 reasoning 模型）会返回空 content，把内容放在 reasoning 字段。
+      // 但要求结构化 JSON 时不能这么做：reasoning 是思考过程，不是答案，拿去 JSON.parse 必然失败。
+      if (!content && !response_format) {
+        content = message?.reasoning || message?.reasoning_content || '';
+      }
       return {
         content,
         thinking: null,

@@ -347,12 +347,20 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
   const handleStartAIFindWords = async (difficulty: WordDifficulty) => {
     setShowAIFindWordsSelector(false);
     setAiFindingWords(true);
-    
+
     try {
-      const words = await extractWordsFromEntries(selectedIds, difficulty);
-      setAiExtractedWords(words);
+      // Server Action 不抛异常，用结构化结果回传失败原因：
+      // Next.js 生产构建会把 action 抛出的错误脱敏成 "Minified React error #xxx"，
+      // 直接读 error.message 用户看不到任何有用信息。
+      const result = await extractWordsFromEntries(selectedIds, difficulty);
+      if (!result.ok) {
+        alert(`AI找词失败：${result.message}`);
+        return;
+      }
+      setAiExtractedWords(result.words);
       setShowAIFindWordsModal(true);
     } catch (error) {
+      // 走到这里通常是网络中断 / action 未部署等异常情况
       console.error('AI找词失败:', error);
       alert('AI找词失败，请重试');
     } finally {
