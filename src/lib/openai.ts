@@ -1,7 +1,12 @@
 /**
  * OpenAI API 调用工具函数
- * 支持多供应商模型配置和降级策略
+ * 支持多供应商模型配置和降级策略。
+ *
+ * 模型来源优先级：显式传入 > 当前用户 BYOK 配置 > 系统环境变量 LLM_CONFIGS。
+ * （BYOK 逻辑与广学英语一致，见 src/lib/user-ai-config.ts）
  */
+
+import { loadUserModelConfigs } from '@/lib/user-ai-config';
 
 export interface ModelConfig {
   name: string;
@@ -67,10 +72,17 @@ interface OpenAIOptions {
 
 /**
  * 解析本次调用应使用的模型配置。
- * 优先级：显式传入 > 系统环境变量配置。
+ * 优先级：显式传入 > 当前用户自定义（BYOK） > 系统环境变量配置。
  */
 async function resolveModelConfigs(explicit?: ModelConfig[]): Promise<ModelConfig[]> {
   if (explicit && explicit.length > 0) return explicit;
+
+  const userConfigs = await loadUserModelConfigs();
+  if (userConfigs && userConfigs.length > 0) {
+    console.log(`[openai] 使用用户自定义大模型配置: ${userConfigs.map((c) => `${c.name}(${c.model})`).join(', ')}`);
+    return userConfigs;
+  }
+
   return modelConfigs;
 }
 

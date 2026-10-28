@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Tag as TagIcon } from 'lucide-react';
+import { Settings, Tag as TagIcon, Sparkles } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { UnauthenticatedPage } from '@/components/UnauthenticatedPage';
 import { Navbar } from '@/components/Navbar';
 import { TagEditModal } from '@/components/TagEditModal';
+import { AiSettingsModal } from '@/components/AiSettingsModal';
 import { loadTagConfigs, saveTagConfigs } from '@/actions/tags';
 import type { WordTag, TagConfig } from '@/types/word';
 
@@ -13,6 +14,7 @@ export function SettingsPageContent() {
   const { isLoggedIn, isClient, isLoading } = useAuth();
   const [allTagConfigs, setAllTagConfigs] = useState<Record<WordTag, TagConfig>>({});
   const [showTagEditModal, setShowTagEditModal] = useState(false);
+  const [showAiSettings, setShowAiSettings] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // 加载标签配置
@@ -59,6 +61,13 @@ export function SettingsPageContent() {
   }
 
   const menuItems = [
+    {
+      id: 'ai',
+      icon: Sparkles,
+      title: 'AI 学习语料设置',
+      description: '选择系统默认大模型，或填写你自己的 API Key / Base / 模型（BYOK）',
+      onClick: () => setShowAiSettings(true),
+    },
     {
       id: 'tags',
       icon: TagIcon,
@@ -122,10 +131,16 @@ export function SettingsPageContent() {
         {/* 提示信息 */}
         <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            💡 提示：标签用于作文积累中的内容分类，修改标签会影响作文列表的标签筛选项。
+            💡 提示：标签用于作文积累中的内容分类；「AI 学习语料设置」里可切换系统默认模型或填入自己的 API 配置。
           </p>
         </div>
       </div>
+
+      {/* AI 学习语料（模型）设置弹窗 */}
+      <AiSettingsModal
+        isOpen={showAiSettings}
+        onClose={() => setShowAiSettings(false)}
+      />
 
       {/* 标签管理弹窗 */}
       <TagEditModal

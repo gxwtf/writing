@@ -15,6 +15,8 @@ model User {
   admin     Int      @default(0)
   email     String?
   realName  String?
+  /// AI 模型设置（BYOK）：{ mode: 'system' | 'custom', apiKey?, apiBase?, model? }
+  aiSettings Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
