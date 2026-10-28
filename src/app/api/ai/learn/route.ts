@@ -61,6 +61,9 @@ function friendlyError(error: unknown): string {
   if (/未配置任何|LLM_CONFIGS/.test(message)) return 'AI 服务未配置，请联系管理员';
   if (/超时|AbortError|timeout|TIMEOUT/i.test(message)) return 'AI 响应超时，请稍后重试或减少选中的作文';
   if (/401|403|Unauthorized|invalid_api_key/i.test(message)) return '自定义模型的 API Key 无效或额度不足，请在「设置 → AI 学习语料设置」中检查';
+  if (/fetch failed|ENOTFOUND|ECONNREFUSED|EAI_AGAIN|getaddrinfo|certificate|network/i.test(message)) {
+    return '无法连接大模型接口（API Base 不可达或网络受限），请检查「设置 → AI 学习语料设置」里的 API Base';
+  }
   if (/404|model_not_found|does not exist/i.test(message)) return '自定义模型不存在或 API Base 填错，请在设置中检查';
   return 'AI 服务暂时不可用，请稍后重试';
 }
@@ -93,7 +96,8 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, message: `一次最多选择 ${MAX_ENTRY_IDS} 条语料` }, { status: 400 });
   }
 
-  const prompt = (body.prompt ?? '').trim();
+  // summarize 的「指定问题」在请求里叫 prompt；同时兼容 question 别名（外部脚本/旧调用）
+  const prompt = (body.prompt ?? (body as { question?: string }).question ?? '').trim();
   const summaryLevel = (body.summaryLevel ?? '').trim();
   if (prompt.length > MAX_PROMPT_CHARS) {
     return Response.json({ ok: false, message: `题目/问题请控制在 ${MAX_PROMPT_CHARS} 字以内` }, { status: 400 });
