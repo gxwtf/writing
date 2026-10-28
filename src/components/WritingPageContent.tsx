@@ -14,7 +14,7 @@ import { WritingEntry, loadWritingEntries, saveWritingEntry, deleteWritingEntrie
 import { loadTagConfigs, saveTagConfigs } from '@/actions/tags';
 import { generateWritingEntriesPdf } from '@/lib/writing-pdf';
 import type { WordTag, TagConfig } from '@/types/word';
-import { AIFindWordsDialog } from '@/components/AIFindWordsDialog';
+import { AILearnDialog } from '@/components/AILearnDialog';
 import { NotebookTransferDialog } from '@/components/NotebookTransferDialog';
 import { copyEntriesToNotebook, loadNotebooks, moveEntriesToNotebook } from '@/actions/notebooks';
 import type { Notebook } from '@/types/word';
@@ -69,6 +69,16 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
   useEffect(() => {
     loadData();
   }, []);
+
+  // 供 AI 学习语料「存入积累本」后刷新列表（新增了条目）
+  const refreshEntries = useCallback(async () => {
+    try {
+      const loaded = await loadWritingEntries('english', notebookId);
+      setEntries(loaded);
+    } catch (error) {
+      console.error('刷新积累列表失败:', error);
+    }
+  }, [notebookId]);
 
   // 筛选和排序
   const filteredEntries = useMemo(() => {
@@ -513,11 +523,13 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
         onTagsUpdate={handleTagConfigUpdate}
       />
 
-      {/* AI 找词（难度选择 / 生成过程 / 结果 同一个弹窗） */}
-      <AIFindWordsDialog
+      {/* AI 学习语料（找词 / 迁移应用 / 总结分析 同一个弹窗） */}
+      <AILearnDialog
         isOpen={showAIFindWords}
         onClose={() => setShowAIFindWords(false)}
         entryIds={selectedIds}
+        notebookId={notebookId}
+        onSaved={refreshEntries}
       />
 
       {/* 复制/移动到其它积累本弹窗 */}

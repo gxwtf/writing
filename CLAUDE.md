@@ -22,6 +22,9 @@
 - 包管理使用 **pnpm**，禁止 npm。
 - 构建脚本固定为 **`next build --webpack`**，不要改回默认 Turbopack。
 - 数据库仅允许操作 localhost；生产数据库为服务器本机 `gxwtf_writing`。
+- **AI 功能**：统一走 `POST /api/ai/learn`（SSE 流式，Route Handler）；大模型来源优先级为
+  「显式传参 > 用户 BYOK（`User.aiSettings`）> 系统默认 `LLM_CONFIGS`」。提示词集中在
+  `src/lib/ai-learn-prompts.ts` / `ai-word-prompts.ts`，改动后请同步两处文档。
 
 ### 严禁删除数据
 

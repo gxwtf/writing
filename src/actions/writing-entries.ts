@@ -206,10 +206,39 @@ export async function updateWritingEntryTags(entryIds: number[], tags: string[])
 }
 
 /**
+ * 把「AI 学习语料」的解答一键存成一条积累。
+ *
+ * 只存解答（不含分析），note 用来标注来源任务，方便在列表里分辨；
+ * notebookId 有值时同时加入该积累本（见 saveWritingEntry）。
+ */
+export async function saveAIAnswer(input: {
+  content: string;
+  note?: string;
+  notebookId?: number;
+}): Promise<{ ok: true; id: number } | { ok: false; message: string }> {
+  const content = (input.content ?? '').trim();
+  if (!content) return { ok: false, message: '没有可保存的内容' };
+
+  try {
+    const entry = await saveWritingEntry({
+      content,
+      note: input.note?.trim() || undefined,
+      notebookId: input.notebookId,
+    });
+    return { ok: true, id: entry.id };
+  } catch (error) {
+    console.error('保存 AI 解答失败:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    if (/未登录/.test(message)) return { ok: false, message: '登录状态已失效，请重新登录' };
+    return { ok: false, message: '保存失败，请稍后重试' };
+  }
+}
+
+/**
  * 用 AI 从选中的作文中提取好词（**非流式**，保留供脚本/降级调用）。
  *
- * 页面上的「AI 找词」走的是流式接口 `POST /api/ai/find-words`（见 app/api/ai/find-words/route.ts），
- * 因为它能在生成过程中给前端反馈；这个 Server Action 只做一次性返回。
+ * 页面上的「AI 学习语料」走的是流式接口 `POST /api/ai/learn`（见 app/api/ai/learn/route.ts），
+ * 因为它能在生成过程中给前端反馈；这个 Server Action 只做一次性返回（找词兜底）。
  * 失败一律用 `{ ok: false, message }` 返回，不要 throw —— 见 ExtractWordsResult 的注释。
  */
 export async function extractWordsFromEntries(

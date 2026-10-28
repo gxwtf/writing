@@ -318,7 +318,7 @@ export const WritingToolbar = ({
                     onPointerDown={(e) => e.stopPropagation()}
                   >
                     <Sparkles className="h-4 w-4 text-purple-600" />
-                    <span className="text-sm">AI 找词</span>
+                    <span className="text-sm">AI 学习语料</span>
                   </button>
 
                   {/* 导出PDF选项 */}
@@ -601,7 +601,7 @@ export const WritingToolbar = ({
                     onPointerDown={(e) => e.stopPropagation()}
                   >
                     <Sparkles className="h-4 w-4 text-purple-600" />
-                    <span className="text-sm">AI 找词</span>
+                    <span className="text-sm">AI 学习语料</span>
                   </button>
 
                   {/* 导出PDF选项 */}
