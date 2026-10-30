@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.mjs dev",
-    "build": "next build --webpack",
+    "build": "next build",
     "start": "node scripts/dev.mjs start",
     "typecheck": "tsc --noEmit",
     "test:e2e": "node scripts/e2e/run-all.mjs"
