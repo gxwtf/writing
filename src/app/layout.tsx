@@ -122,6 +122,23 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#a31f24" />
         <meta name="msapplication-tap-highlight" content="no" />
         <link rel="mask-icon" href="/icon-512.png" color="#a31f24" />
+        {/*
+          百度统计（hm.js）。按百度官方要求放在 </head> 之前，一处安装全站生效。
+          根布局渲染本应用全部路由，加这一次即可覆盖整个作文积累本站
+          （writing.gxwtf.cn）。这是本项目专属的站点 ID。
+        */}
+        <script
+          id="baidu-tongji"
+          dangerouslySetInnerHTML={{
+            __html: `var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?1b7504c389019bafb6f19693c49e27f3";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();`,
+          }}
+        />
       </head>
       <body className="antialiased flex flex-col min-h-screen">
         <AuthProvider>
