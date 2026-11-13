@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Plus, ChevronDown, BookOpen } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { UnauthenticatedPage } from '@/components/UnauthenticatedPage';
 import { Navbar } from '@/components/Navbar';
@@ -18,6 +19,12 @@ import { AILearnDialog } from '@/components/AILearnDialog';
 import { NotebookTransferDialog } from '@/components/NotebookTransferDialog';
 import { copyEntriesToNotebook, loadNotebooks, moveEntriesToNotebook } from '@/actions/notebooks';
 import type { Notebook } from '@/types/word';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
+} from '@/components/ui/dropdown-menu';
 
 interface WritingPageContentProps {
   /** 传入时只显示该积累本内的积累（对应广学英语 AuthenticatedPage 的 wordbookId） */
@@ -28,6 +35,7 @@ interface WritingPageContentProps {
 
 export function WritingPageContent({ notebookId, notebookName }: WritingPageContentProps = {}) {
   const { isLoggedIn, isClient, isLoading } = useAuth();
+  const router = useRouter();
   const [entries, setEntries] = useState<WritingEntry[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +51,9 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
   const [rangeSelectMode, setRangeSelectMode] = useState(false);
   const rangeFirstEndpoint = useRef<number | null>(null);
   const rangeSelectModeRef = useRef(false);
+  // 「选择」模式：默认关闭，页面不显示勾选框；点「选择」后才允许勾选与批量操作
+  const [selectMode, setSelectMode] = useState(false);
+  const selectModeRef = useRef(false);
   const [showAIFindWords, setShowAIFindWords] = useState(false);
   // 复制 / 移动到其它积累本
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
@@ -53,12 +64,15 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
   // 加载数据
   const loadData = async () => {
     try {
-      const [loadedEntries, loadedTagConfigs] = await Promise.all([
+      const [loadedEntries, loadedTagConfigs, loadedNotebooks] = await Promise.all([
         loadWritingEntries('english', notebookId),
-        loadTagConfigs()
+        loadTagConfigs(),
+        // 标题栏「切换积累本」下拉需要完整列表；复制/移动后计数也随之刷新
+        loadNotebooks()
       ]);
       setEntries(loadedEntries);
       setAllTagConfigs(loadedTagConfigs);
+      setNotebooks(loadedNotebooks);
     } catch (error) {
       console.error('加载作文积累失败:', error);
     } finally {
@@ -168,6 +182,8 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
 
   // 处理选择 — 使用 rangeSelectModeRef 避免闭包陈旧
   const handleToggleSelect = useCallback((id: number) => {
+    // 不在选择模式时点击卡片不产生勾选
+    if (!selectModeRef.current) return;
     if (rangeSelectModeRef.current) {
       const currentIndex = filteredEntries.findIndex(e => e.id === id);
       if (currentIndex === -1) return;
@@ -210,10 +226,26 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
       setRangeSelectMode(false);
       rangeFirstEndpoint.current = null;
     } else {
+      selectModeRef.current = true;
+      setSelectMode(true);
       rangeSelectModeRef.current = true;
       setRangeSelectMode(true);
       rangeFirstEndpoint.current = null;
     }
+  }, []);
+
+  const handleEnterSelectMode = useCallback(() => {
+    selectModeRef.current = true;
+    setSelectMode(true);
+  }, []);
+
+  const handleExitSelectMode = useCallback(() => {
+    selectModeRef.current = false;
+    setSelectMode(false);
+    rangeSelectModeRef.current = false;
+    setRangeSelectMode(false);
+    rangeFirstEndpoint.current = null;
+    setSelectedIds([]);
   }, []);
 
   const handleToggleSelectAll = useCallback(() => {
@@ -385,9 +417,39 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
         {/* 标题栏 */}
         <div className="flex items-center justify-between mb-4 sm:mb-6 gap-3">
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
-              {notebookName || '所有积累'}
-            </h1>
+            <div className="flex items-center gap-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+                {notebookName || '所有积累'}
+              </h1>
+              {notebookId !== undefined && notebooks.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      aria-label="切换积累本"
+                      className="p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-56">
+                    {notebooks.map((book) => (
+                      <DropdownMenuItem
+                        key={book.id}
+                        onClick={() => {
+                          if (book.id !== notebookId) {
+                            router.push(`/books/${book.id}`);
+                          }
+                        }}
+                      >
+                        <BookOpen className="h-4 w-4" />
+                        <span className="truncate flex-1">{book.name}</span>
+                        <span className="text-xs text-gray-400">{book.entryCount}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1 truncate">
               共 {entries.length} 个积累，{filteredEntries.length} 个符合条件
             </p>
@@ -416,6 +478,9 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
           searchTerm={searchTerm}
           allTagConfigs={allTagConfigs}
           rangeSelectMode={rangeSelectMode}
+          selectMode={selectMode}
+          onEnterSelectMode={handleEnterSelectMode}
+          onExitSelectMode={handleExitSelectMode}
           onToggleSelectAll={handleToggleSelectAll}
           onRangeSelectToggle={handleRangeSelectToggle}
           onSort={setSortBy}
@@ -487,6 +552,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
               entry={entry}
               isSelected={selectedIds.includes(entry.id)}
               onToggleSelect={handleToggleSelect}
+              selectable={selectMode}
               onEdit={(entry) => {
                 setEditingEntry(entry);
                 setShowModal(true);

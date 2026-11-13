@@ -14,7 +14,9 @@ import {
   ChevronDown,
   Sparkles,
   Copy,
-  FolderInput
+  FolderInput,
+  ListChecks,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +39,10 @@ interface WritingToolbarProps {
   searchTerm: string;
   allTagConfigs: Record<WordTag, TagConfig>;
   rangeSelectMode: boolean;
+  /** 是否处于「选择」模式：默认关闭，卡片不显示勾选框 */
+  selectMode: boolean;
+  onEnterSelectMode: () => void;
+  onExitSelectMode: () => void;
   onToggleSelectAll: () => void;
   onRangeSelectToggle: () => void;
   onSort: (sort: 'default' | 'alphabet') => void;
@@ -60,6 +66,9 @@ export const WritingToolbar = ({
   searchTerm,
   allTagConfigs,
   rangeSelectMode,
+  selectMode,
+  onEnterSelectMode,
+  onExitSelectMode,
   onToggleSelectAll,
   onRangeSelectToggle,
   onSort,
@@ -124,34 +133,57 @@ export const WritingToolbar = ({
       <div className="hidden md:flex items-center justify-between gap-3">
         {/* 左侧：选择和排序 */}
         <div className="flex items-center gap-2">
-          {/* 全选按钮 + ▼ 下拉菜单 */}
-          <div className="flex items-center">
+          {/* 选择模式：默认只显示「选择」按钮，进入选择模式后才出现勾选框与全选 */}
+          {!selectMode ? (
             <Button
               variant="outline"
               size="sm"
-              onClick={onToggleSelectAll}
-              className="h-9 text-sm rounded-r-none border-r-0"
+              onClick={onEnterSelectMode}
+              title="进入选择模式，勾选积累后可批量操作"
+              className="h-9 text-sm"
             >
-              <CheckSquare className="h-4 w-4 mr-2" />
-              {isAllSelected ? <span>取消全选</span> : <span>全选</span>}
+              <ListChecks className="h-4 w-4 mr-2" />
+              <span>选择</span>
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant={rangeSelectMode ? 'default' : 'outline'}
-                  size="sm"
-                  className="h-9 text-sm px-2 rounded-l-none"
-                >
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-40">
-                <DropdownMenuItem onClick={onRangeSelectToggle}>
-                  {rangeSelectMode ? <span>退出区间选择</span> : <span>区间选择</span>}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          ) : (
+            <div className="flex items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onToggleSelectAll}
+                className="h-9 text-sm rounded-r-none border-r-0"
+              >
+                <CheckSquare className="h-4 w-4 mr-2" />
+                {isAllSelected ? <span>取消全选</span> : <span>全选</span>}
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={rangeSelectMode ? 'default' : 'outline'}
+                    size="sm"
+                    className="h-9 text-sm px-2 rounded-l-none"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-40">
+                  <DropdownMenuItem onClick={onRangeSelectToggle}>
+                    {rangeSelectMode ? <span>退出区间选择</span> : <span>区间选择</span>}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onExitSelectMode}
+                title="退出选择模式（已选积累将被清空）"
+                className="h-9 text-sm ml-2"
+              >
+                <X className="h-4 w-4 mr-1" />
+                <span>退出</span>
+              </Button>
+            </div>
+          )}
 
           <div className="flex gap-1">
             <Button
@@ -409,33 +441,58 @@ export const WritingToolbar = ({
       {/* 移动端：简化布局 */}
       <div className="md:hidden">
         <div className="flex flex-wrap items-center gap-2 mb-2">
-          {/* 全选按钮 + ▼ 下拉菜单 — 移动端 */}
-          <div className="flex items-center">
+          {/* 选择模式 — 移动端：默认只显示「选择」按钮 */}
+          {!selectMode ? (
             <Button
               variant="outline"
               size="sm"
-              onClick={onToggleSelectAll}
-              className="h-9 text-xs rounded-r-none border-r-0"
+              onClick={onEnterSelectMode}
+              className="h-9 text-xs px-2"
+              aria-label="选择"
+              title="进入选择模式"
             >
-              <CheckSquare className="h-4 w-4" />
+              <ListChecks className="h-4 w-4" />
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant={rangeSelectMode ? 'default' : 'outline'}
-                  size="sm"
-                  className="h-9 text-xs px-1.5 rounded-l-none"
-                >
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-40">
-                <DropdownMenuItem onClick={onRangeSelectToggle}>
-                  {rangeSelectMode ? <span>退出区间选择</span> : <span>区间选择</span>}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          ) : (
+            <div className="flex items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onToggleSelectAll}
+                className="h-9 text-xs rounded-r-none border-r-0"
+                aria-label={isAllSelected ? '取消全选' : '全选'}
+              >
+                <CheckSquare className="h-4 w-4" />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={rangeSelectMode ? 'default' : 'outline'}
+                    size="sm"
+                    className="h-9 text-xs px-1.5 rounded-l-none"
+                    aria-label="区间选择"
+                  >
+                    <ChevronDown className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-40">
+                  <DropdownMenuItem onClick={onRangeSelectToggle}>
+                    {rangeSelectMode ? <span>退出区间选择</span> : <span>区间选择</span>}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onExitSelectMode}
+                className="h-9 text-xs px-1.5 ml-1"
+                aria-label="退出选择"
+                title="退出选择模式（已选积累将被清空）"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
 
           <div className="flex gap-1">
             <Button
