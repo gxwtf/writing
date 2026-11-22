@@ -13,3 +13,8 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - baseline-browser-mapping@2.11.23
   - tailwind-merge@3.7.0
+
+# 2026-11-23：防止依赖树里出现两份 pg（会让 @prisma/adapter-pg 的 instanceof Pool 判定失效，
+# 表现为 DB 写入时 uncaughtException ERR_INVALID_ARG_TYPE）。
+overrides:
+  pg: 8.23.1
