@@ -320,7 +320,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b border-gray-200 bg-purple-50/70 p-5 dark:border-gray-700 dark:bg-gray-800 sm:p-6">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500 text-white">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500 text-white dark:bg-purple-600">
               <Sparkles className="h-5 w-5" />
             </div>
             <div className="min-w-0">
@@ -346,7 +346,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                   onClick={() => { setTask(t.id); resetRunState(); }}
                   className={`flex items-center gap-1.5 rounded-t-lg px-3 py-2 text-sm transition-colors ${
                     active
-                      ? 'border-b-2 border-brand-crimson font-semibold text-brand-crimson'
+                      ? 'border-b-2 border-brand-crimson font-semibold text-brand-crimson dark:text-red-400'
                       : 'border-b-2 border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                   }`}
                 >
@@ -376,18 +376,18 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                         type="button"
                         aria-pressed={isSelected}
                         onClick={() => setDifficulty(option.id)}
-                        className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-300 sm:p-4 ${
+                        className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:focus-visible:ring-blue-700 sm:p-4 ${
                           isSelected
-                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-300/60'
-                            : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white dark:border-gray-600 dark:bg-gray-700'
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-300/60 dark:border-blue-500 dark:bg-blue-900/30 dark:ring-blue-700/60'
+                            : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600'
                         }`}
                       >
-                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${isSelected ? 'bg-blue-600 text-white' : 'border border-gray-200 bg-white text-purple-600 dark:border-gray-500 dark:bg-gray-800'}`}>
+                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${isSelected ? 'bg-blue-600 text-white dark:bg-blue-500' : 'border border-gray-200 bg-white text-purple-600 dark:border-gray-500 dark:bg-gray-800 dark:text-purple-400'}`}>
                           <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                         </div>
                         <div className="min-w-0">
                           <div className="text-sm font-semibold text-gray-900 dark:text-white">{option.title}</div>
-                          <div className="mt-0.5 text-xs leading-relaxed text-gray-600 dark:text-gray-300">{option.description}</div>
+                          <div className="mt-0.5 text-xs leading-relaxed text-gray-600 dark:text-gray-200">{option.description}</div>
                         </div>
                       </button>
                     );
@@ -406,7 +406,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                       rows={4}
                       placeholder="例如：有些人认为科技让人变懒，请就此写一篇英语议论文的第三段；或：论点「真正的自律来自内在动机」"
                     />
-                    <div className="text-right text-xs text-gray-400">{topic.length} / 2000</div>
+                    <div className="text-right text-xs text-muted-foreground">{topic.length} / 2000</div>
                   </div>
 
                   <div className="space-y-2">
@@ -419,8 +419,8 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                           onClick={() => setGenre(g.id)}
                           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                             genre === g.id
-                              ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-300'
-                              : 'border-gray-200 text-gray-600 hover:border-gray-300 dark:border-gray-600 dark:text-gray-300'
+                              ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-300 dark:border-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:ring-blue-700'
+                              : 'border-gray-200 text-gray-600 hover:border-gray-300 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-500'
                           }`}
                         >
                           {g.label}
@@ -439,8 +439,8 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                           onClick={() => setOutputLength(l.id)}
                           className={`rounded-lg border px-2 py-2 text-left transition-colors ${
                             outputLength === l.id
-                              ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-300'
-                              : 'border-gray-200 hover:border-gray-300 dark:border-gray-600'
+                              ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-300 dark:border-blue-700 dark:bg-blue-900/30 dark:ring-blue-700'
+                              : 'border-gray-200 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-500'
                           }`}
                         >
                           <div className="text-xs font-medium text-gray-900 dark:text-white">{l.label}</div>
@@ -472,7 +472,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                       rows={3}
                       placeholder="例如：作者为什么反对把阅读等同于做题？请用原文依据回答。"
                     />
-                    <div className="text-right text-xs text-gray-400">{question.length} / 2000</div>
+                    <div className="text-right text-xs text-muted-foreground">{question.length} / 2000</div>
                   </div>
                 </div>
               )}
@@ -491,7 +491,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
           {phase === 'running' && (
             <div className="space-y-4">
               <div className="flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50/60 p-3 dark:border-gray-600 dark:bg-gray-700/60">
-                <Loader2 className="h-5 w-5 shrink-0 animate-spin text-purple-600" />
+                <Loader2 className="h-5 w-5 shrink-0 animate-spin text-purple-600 dark:text-purple-400" />
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-medium text-gray-900 dark:text-white">
                     AI 正在处理「{TASKS.find((t) => t.id === task)?.title}」…
@@ -521,14 +521,14 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                   const active = i === stepIndex - 1;
                   return (
                     <li key={long} className="flex flex-1 items-center gap-2">
-                      <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${done ? 'bg-brand-crimson text-white' : active ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-300' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
+                      <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${done ? 'bg-brand-crimson text-white' : active ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-300 dark:bg-blue-900/40 dark:text-blue-200 dark:ring-blue-700' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
                         {done ? <Check className="h-3 w-3" /> : i + 1}
                       </span>
                       <span className={`whitespace-nowrap ${active ? 'font-medium text-gray-700 dark:text-gray-200' : ''}`}>
                         <span className="sm:hidden">{short}</span>
                         <span className="hidden sm:inline">{long}</span>
                       </span>
-                      {i < 2 && <span className="hidden flex-1 border-t border-dashed border-gray-300 sm:block" />}
+                      {i < 2 && <span className="hidden flex-1 border-t border-dashed border-gray-300 sm:block dark:border-gray-600" />}
                     </li>
                   );
                 })}
@@ -639,7 +639,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
               </div>
 
               {payload.chunks.length === 0 && task === 'transfer' && (
-                <p className="text-xs text-gray-400 dark:text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   本次模型没有单独列出可迁移语块，可直接使用下面的解答；想更细可以重试一次。
                 </p>
               )}
@@ -674,7 +674,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                 </div>
               )}
               {payload.analysis === NO_ANALYSIS && (
-                <p className="text-xs text-gray-400 dark:text-gray-500">本次无需分析</p>
+                <p className="text-xs text-muted-foreground">本次无需分析</p>
               )}
             </div>
           )}

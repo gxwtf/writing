@@ -118,7 +118,7 @@ export function NotebookTransferDialog({
                     onCheckedChange={(checked) => toggleBook(book.id, checked === true)}
                   />
                   <span className="truncate flex-1">{book.name}</span>
-                  <span className="text-xs text-gray-400">{book.entryCount}</span>
+                  <span className="text-xs text-muted-foreground">{book.entryCount}</span>
                 </label>
               ))}
             </div>

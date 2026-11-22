@@ -134,28 +134,28 @@ export function WebAppManager() {
         paddingRight: 'calc(env(safe-area-inset-right) + 0.75rem)',
       }}
     >
-      <div className="pointer-events-auto mx-auto flex max-w-md items-start gap-3 rounded-xl bg-gray-900/95 px-4 py-3 text-white shadow-2xl backdrop-blur">
+      <div className="pointer-events-auto mx-auto flex max-w-md items-start gap-3 rounded-xl bg-foreground/95 px-4 py-3 text-background shadow-2xl backdrop-blur">
         {hint === 'ios' ? (
-          <Share className="mt-0.5 h-5 w-5 shrink-0 text-white" />
+          <Share className="mt-0.5 h-5 w-5 shrink-0" />
         ) : (
-          <Download className="mt-0.5 h-5 w-5 shrink-0 text-white" />
+          <Download className="mt-0.5 h-5 w-5 shrink-0" />
         )}
         <div className="min-w-0 flex-1 text-sm leading-relaxed">
           <p className="font-semibold">安装「作文积累本」到主屏幕</p>
           {hint === 'ios' ? (
-            <p className="mt-0.5 text-white/80">
+            <p className="mt-0.5 text-background/80">
               点击底部
               <Share className="mx-1 inline h-4 w-4 align-text-bottom" />
               分享按钮，选择「添加到主屏幕」，即可全屏使用。
             </p>
           ) : (
-            <p className="mt-0.5 text-white/80">安装后可全屏使用，像 App 一样从桌面直接打开。</p>
+            <p className="mt-0.5 text-background/80">安装后可全屏使用，像 App 一样从桌面直接打开。</p>
           )}
         </div>
         {hint === 'install' && (
           <button
             onClick={install}
-            className="shrink-0 self-center rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 transition-colors hover:bg-white/90"
+            className="shrink-0 self-center rounded-md bg-background px-3 py-1.5 text-sm font-semibold text-foreground transition-colors hover:bg-background/90"
           >
             安装
           </button>
@@ -163,7 +163,7 @@ export function WebAppManager() {
         <button
           onClick={dismiss}
           aria-label="不再提示"
-          className="-mr-1 rounded-md p-1 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+          className="-mr-1 rounded-md p-1 text-background/70 transition-colors hover:bg-background/10 hover:text-background"
         >
           <X className="h-4 w-4" />
         </button>

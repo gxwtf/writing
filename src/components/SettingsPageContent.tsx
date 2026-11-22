@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Tag as TagIcon, Sparkles } from 'lucide-react';
+import { Settings, Tag as TagIcon, Sparkles, SunMoon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { UnauthenticatedPage } from '@/components/UnauthenticatedPage';
 import { Navbar } from '@/components/Navbar';
 import { TagEditModal } from '@/components/TagEditModal';
 import { AiSettingsModal } from '@/components/AiSettingsModal';
+import { ThemeSettingsDialog } from '@/components/theme/theme-settings-dialog';
 import { loadTagConfigs, saveTagConfigs } from '@/actions/tags';
 import type { WordTag, TagConfig } from '@/types/word';
 
@@ -15,6 +16,7 @@ export function SettingsPageContent() {
   const [allTagConfigs, setAllTagConfigs] = useState<Record<WordTag, TagConfig>>({});
   const [showTagEditModal, setShowTagEditModal] = useState(false);
   const [showAiSettings, setShowAiSettings] = useState(false);
+  const [showThemeSettings, setShowThemeSettings] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // 加载标签配置
@@ -48,7 +50,7 @@ export function SettingsPageContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 dark:border-gray-400 mx-auto"></div>
           <p className="mt-4 text-gray-600 dark:text-gray-400">加载中...</p>
         </div>
       </div>
@@ -74,6 +76,13 @@ export function SettingsPageContent() {
       title: '标签管理',
       description: '创建、编辑和组织标签，用于作文积累中的内容分类',
       onClick: () => setShowTagEditModal(true),
+    },
+    {
+      id: 'theme',
+      icon: SunMoon,
+      title: '外观',
+      description: '浅色 / 深色 / 跟随系统',
+      onClick: () => setShowThemeSettings(true),
     },
   ];
 
@@ -117,7 +126,7 @@ export function SettingsPageContent() {
                       {item.description}
                     </p>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
+                  <div className="text-muted-foreground group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -141,6 +150,9 @@ export function SettingsPageContent() {
         isOpen={showAiSettings}
         onClose={() => setShowAiSettings(false)}
       />
+
+      {/* 外观（浅色 / 深色 / 跟随系统）弹窗 */}
+      <ThemeSettingsDialog open={showThemeSettings} onOpenChange={setShowThemeSettings} />
 
       {/* 标签管理弹窗 */}
       <TagEditModal

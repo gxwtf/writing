@@ -48,7 +48,7 @@ export const ColorSelector = ({ isOpen, onClose, onColorSelect, currentColorId }
               key={color.id}
               className={`relative h-16 rounded-lg border-2 transition-all duration-200 transform hover:scale-105 hover:shadow-lg ${
                 selectedColorId === color.id
-                  ? 'ring-2 ring-offset-2 ring-primary border-primary'
+                  ? 'ring-2 ring-offset-2 ring-primary border-primary dark:ring-offset-background'
                   : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
               }`}
               onClick={() => handleColorSelect(color)}
@@ -63,7 +63,7 @@ export const ColorSelector = ({ isOpen, onClose, onColorSelect, currentColorId }
               {selectedColorId === color.id && (
                 <div className="absolute -top-1 -right-1">
                   <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                    <svg className="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-3 w-3 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
@@ -75,9 +75,9 @@ export const ColorSelector = ({ isOpen, onClose, onColorSelect, currentColorId }
 
         {/* 当前选择 */}
         <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">当前选择：</p>
+          <p className="text-sm text-gray-600 dark:text-gray-200 mb-2">当前选择：</p>
           <div className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${COLOR_PRESETS.find(c => c.id === selectedColorId)?.className || 'bg-gray-200'}`}>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${COLOR_PRESETS.find(c => c.id === selectedColorId)?.className || 'bg-muted'}`}>
               <div className="w-4 h-4 rounded-full bg-current opacity-80"></div>
             </div>
             <span className="text-gray-900 dark:text-white font-medium">

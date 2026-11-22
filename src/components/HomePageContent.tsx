@@ -135,7 +135,7 @@ export function HomePageContent() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* 问候 */}
         <div className="text-center mb-8">
-          <p className="text-xs sm:text-sm text-gray-400 dark:text-gray-500 tracking-wide">
+          <p className="text-xs sm:text-sm text-muted-foreground tracking-wide">
             {today ? formatDate(today) : '\u00a0'}
           </p>
           <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
@@ -158,7 +158,7 @@ export function HomePageContent() {
                 <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
                   {quote.zh}
                 </p>
-                <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">
+                <p className="mt-2 text-xs text-muted-foreground">
                   —— {quote.source}
                 </p>
               </>
@@ -168,14 +168,14 @@ export function HomePageContent() {
 
             <button
               onClick={() => router.push('/books')}
-              className="mt-6 w-full sm:w-auto sm:min-w-[220px] flex items-center justify-center gap-2 px-6 py-3 bg-brand-crimson hover:bg-brand-deep-red text-white rounded-2xl font-semibold text-base shadow-lg shadow-red-500/20 transition-all"
+              className="mt-6 w-full sm:w-auto sm:min-w-[220px] flex items-center justify-center gap-2 px-6 py-3 bg-brand-crimson hover:bg-brand-deep-red text-white rounded-2xl font-semibold text-base shadow-lg shadow-red-500/20 dark:shadow-red-900/50 transition-all"
             >
               打开我的积累本
               <ArrowRight className="h-5 w-5" />
             </button>
 
             {!loading && !hasEntries && (
-              <p className="mt-3 text-sm text-gray-400 dark:text-gray-500">
+              <p className="mt-3 text-sm text-muted-foreground">
                 还没有积累内容，去积累本里添加第一条吧
               </p>
             )}
@@ -193,7 +193,7 @@ export function HomePageContent() {
                   <div className={`mt-2 text-lg sm:text-xl font-bold ${item.color}`}>
                     {loading ? '-' : item.value}
                   </div>
-                  <div className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+                  <div className="mt-0.5 text-xs text-muted-foreground">
                     {item.label}
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export function HomePageContent() {
             <h2 className="text-sm font-semibold text-gray-900 dark:text-white">我的积累本</h2>
             <Link
               href="/books"
-              className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors"
+              className="text-xs text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors"
             >
               查看全部
               <ArrowRight className="h-3 w-3" />
@@ -216,14 +216,14 @@ export function HomePageContent() {
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center py-8 text-gray-400 dark:text-gray-500 text-sm">
+            <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
               加载中...
             </div>
           ) : notebooks.length === 0 ? (
             <Link
               href="/books"
-              className="flex items-center justify-center gap-2 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 py-6 text-sm text-gray-400 dark:text-gray-500 hover:border-brand-crimson/40 transition-colors"
+              className="flex items-center justify-center gap-2 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 py-6 text-sm text-muted-foreground hover:border-brand-crimson/40 transition-colors"
             >
               <Plus className="h-4 w-4" />
               还没有积累本，去创建一个
@@ -246,7 +246,7 @@ export function HomePageContent() {
                     <span className="flex-1 min-w-0 font-medium text-gray-900 dark:text-white truncate">
                       {book.name}
                     </span>
-                    <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">
+                    <span className="text-xs text-muted-foreground shrink-0">
                       {book.entryCount} 条
                     </span>
                     <ArrowRight className="h-4 w-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-500 dark:group-hover:text-gray-300 transition-colors shrink-0" />
@@ -258,7 +258,7 @@ export function HomePageContent() {
         </div>
 
         {/* 底部提示 */}
-        <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-1">
+        <p className="mt-8 text-center text-xs text-muted-foreground flex items-center justify-center gap-1">
           <Sparkles className="h-3.5 w-3.5" />
           每天读一句，攒进你的素材本
         </p>

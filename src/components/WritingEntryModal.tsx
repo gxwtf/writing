@@ -77,7 +77,7 @@ export const WritingEntryModal = ({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                内容 <span className="text-red-500">*</span>
+                内容 <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <Textarea
                 value={content}
@@ -132,11 +132,11 @@ export const WritingEntryModal = ({
                         ${
                           isSelected
                             ? colorPreset
-                              ? `${colorPreset.className} dark:bg-gray-800 dark:text-gray-300 ring-2 ring-blue-500 ring-offset-1 shadow-md`
-                              : 'bg-blue-100 text-blue-800 border-blue-500 ring-2 ring-blue-500 ring-offset-1'
+                              ? `${colorPreset.className} ring-2 ring-blue-500 ring-offset-1 shadow-md dark:ring-offset-background`
+                              : 'bg-blue-100 text-blue-800 border-blue-500 ring-2 ring-blue-500 ring-offset-1 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700 dark:ring-blue-700 dark:ring-offset-background'
                             : colorPreset
-                              ? `${colorPreset.className} dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-opacity-80`
-                              : 'bg-gray-200 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-opacity-80'
+                              ? `${colorPreset.className} hover:bg-opacity-80`
+                              : 'bg-gray-200 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 hover:bg-opacity-80'
                         }
                         cursor-pointer transition-all hover:scale-105 hover:opacity-90
                       `}
@@ -161,7 +161,7 @@ export const WritingEntryModal = ({
             <Button
               onClick={handleSave}
               disabled={!content.trim()}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
             >
               {initialEntry ? '保存' : '添加'}
             </Button>

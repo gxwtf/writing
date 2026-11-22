@@ -122,11 +122,11 @@ export const WritingEntryCard = ({
                     e.stopPropagation();
                     onTagClick?.(tag);
                   }}
-                  className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md"
+                  className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md dark:focus:ring-blue-400 dark:focus:ring-offset-background"
                 >
                   <Badge
                     variant="secondary"
-                    className={`${colorPreset?.className || 'bg-gray-200'} text-xs cursor-pointer hover:opacity-80 transition-opacity border border-current`}
+                    className={`${colorPreset?.className || 'bg-muted'} text-xs cursor-pointer hover:opacity-80 transition-opacity border border-current`}
                   >
                     <span>{displayName}</span>
                   </Badge>
@@ -134,7 +134,7 @@ export const WritingEntryCard = ({
               );
             })}
             {entry.tags.length === 0 && (
-              <Badge variant="outline" className="text-gray-400 text-xs">
+              <Badge variant="outline" className="text-muted-foreground text-xs">
                 无标签
               </Badge>
             )}

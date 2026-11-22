@@ -386,7 +386,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 dark:border-gray-400 mx-auto"></div>
           <p className="mt-4 text-gray-600 dark:text-gray-400">加载中...</p>
         </div>
       </div>
@@ -426,7 +426,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
                   <DropdownMenuTrigger asChild>
                     <button
                       aria-label="切换积累本"
-                      className="p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
                     >
                       <ChevronDown className="h-4 w-4" />
                     </button>
@@ -443,7 +443,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
                       >
                         <BookOpen className="h-4 w-4" />
                         <span className="truncate flex-1">{book.name}</span>
-                        <span className="text-xs text-gray-400">{book.entryCount}</span>
+                        <span className="text-xs text-muted-foreground">{book.entryCount}</span>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
@@ -516,7 +516,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
                 </button>
                 <button
                   onClick={handleDeleteSelected}
-                  className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white rounded-lg transition-colors"
                 >
                   确认删除
                 </button>
@@ -528,7 +528,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
         {/* 积累列表 */}
         {filteredEntries.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 dark:text-gray-600 mb-4">
+            <div className="text-muted-foreground mb-4">
               {entries.length === 0 ? (
                 <p>还没有添加任何积累内容</p>
               ) : (

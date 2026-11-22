@@ -149,7 +149,7 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                     key={tag}
                     className={`flex items-center justify-between p-3 rounded-lg ${
                       editingTag === tag
-                        ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500'
+                        ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 dark:border-blue-400'
                         : 'bg-gray-50 dark:bg-gray-700'
                     }`}
                   >
@@ -165,7 +165,7 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => setShowColorSelector(true)}
-                            className={`w-6 h-6 rounded-full border-2 border-gray-300 ${colorPreset?.bgClass || 'bg-gray-200'}`}
+                            className={`w-6 h-6 rounded-full border-2 border-input ${colorPreset?.bgClass || 'bg-muted'}`}
                             title="更改颜色"
                           />
                           <Button size="sm" variant="ghost" onClick={handleSaveEdit}>
@@ -181,7 +181,7 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                         <div className="flex items-center gap-2">
                           <Badge
                             variant="outline"
-                            className={`${colorPreset?.className || 'bg-gray-200 text-gray-700'} dark:bg-gray-800 dark:text-gray-300`}
+                            className={`${colorPreset?.className || 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
                           >
                             {config.name}
                           </Badge>
@@ -200,7 +200,7 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                             size="sm"
                             variant="ghost"
                             onClick={() => handleOpenDeleteConfirm(tag)}
-                            className="text-red-500 hover:text-red-700"
+                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                             title="删除标签"
                             aria-label={`删除标签 ${config.name}`}
                           >

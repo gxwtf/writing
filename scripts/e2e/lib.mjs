@@ -74,7 +74,10 @@ function httpsify(url) {
   // 本地隔离副本（http://127.0.0.1:3006 之类）没有 TLS，强制 https 会直接 TLS 握手失败；
   // 本地联调回归时设置 E2E_HTTP_OK=1 关掉这层提升。
   if (process.env.E2E_HTTP_OK === '1') return url;
-  return url.startsWith('http://') ? 'https://' + url.slice(7) : url;
+  // 本地预览（http://localhost:3106 这类）不要被强制改写为 https：
+  // 回环地址上没有 TLS，改写后 SSO 回调会直接 SSL 报错。线上域名仍然强制 https。
+  const isLoopback = /^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(url);
+  return url.startsWith('http://') && !isLoopback ? 'https://' + url.slice(7) : url;
 }
 
 export async function loginViaSso({ identifier, password, system = SYSTEM, back = '/' } = {}) {

@@ -208,7 +208,7 @@ function ModeCard({ selected, onSelect, icon, title, description }: ModeCardProp
       onClick={onSelect}
       className={`w-full text-left rounded-lg border p-4 transition-all flex items-start gap-3 ${
         selected
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-500'
+          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-500 dark:ring-blue-700'
           : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
       }`}
     >

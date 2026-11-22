@@ -266,7 +266,7 @@ export const WritingToolbar = ({
                               onMouseDown={(e) => e.stopPropagation()}
                               onPointerDown={(e) => e.stopPropagation()}
                             >
-                              <span className={`${COLOR_PRESETS.find(c => c.id === tagConfig.colorId)?.className || 'bg-gray-200'} text-sm px-2 py-1 rounded-full`}>
+                              <span className={`${COLOR_PRESETS.find(c => c.id === tagConfig.colorId)?.className || 'bg-muted'} text-sm px-2 py-1 rounded-full`}>
                                 {tagConfig.name}
                               </span>
                             </label>
@@ -304,7 +304,7 @@ export const WritingToolbar = ({
         <div className="flex items-center gap-2">
           <div className="relative">
             <label htmlFor="writing-search" className="sr-only">搜索内容</label>
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
             <Input
               id="writing-search"
               placeholder="搜索内容..."
@@ -329,7 +329,7 @@ export const WritingToolbar = ({
               <Layers className="h-4 w-4 mr-2" />
               <span className="hidden lg:inline">批量操作</span>
               {canBatchOperate && (
-                <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-xs bg-white/20 text-white backdrop-blur-sm">
+                <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-xs bg-black/20 text-white backdrop-blur-sm">
                   {selectedEntryIds.length}
                 </Badge>
               )}
@@ -349,7 +349,7 @@ export const WritingToolbar = ({
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
-                    <Sparkles className="h-4 w-4 text-purple-600" />
+                    <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                     <span className="text-sm">AI 学习语料</span>
                   </button>
 
@@ -379,7 +379,7 @@ export const WritingToolbar = ({
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
-                    <Tag className="h-4 w-4 text-blue-600" />
+                    <Tag className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span className="text-sm">设置标签</span>
                   </button>
 
@@ -428,7 +428,7 @@ export const WritingToolbar = ({
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
-                    <Trash2 className="h-4 w-4 text-red-600" />
+                    <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
                     <span className="text-sm">删除选中</span>
                   </button>
                 </div>
@@ -575,7 +575,7 @@ export const WritingToolbar = ({
                               onMouseDown={(e) => e.stopPropagation()}
                               onPointerDown={(e) => e.stopPropagation()}
                             >
-                              <span className={`${COLOR_PRESETS.find(c => c.id === tagConfig.colorId)?.className || 'bg-gray-200'} text-sm px-2 py-1 rounded-full`}>
+                              <span className={`${COLOR_PRESETS.find(c => c.id === tagConfig.colorId)?.className || 'bg-muted'} text-sm px-2 py-1 rounded-full`}>
                                 {tagConfig.name}
                               </span>
                             </label>
@@ -612,7 +612,7 @@ export const WritingToolbar = ({
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative flex-1 min-w-0">
             <label htmlFor="writing-search-mobile" className="sr-only">搜索内容</label>
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
             <Input
               id="writing-search-mobile"
               placeholder="搜索内容..."
@@ -637,7 +637,7 @@ export const WritingToolbar = ({
             >
               <Layers className="h-4 w-4" />
               {canBatchOperate && (
-                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs bg-white/20 text-white backdrop-blur-sm">
+                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs bg-black/20 text-white backdrop-blur-sm">
                   {selectedEntryIds.length}
                 </Badge>
               )}
@@ -657,7 +657,7 @@ export const WritingToolbar = ({
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
-                    <Sparkles className="h-4 w-4 text-purple-600" />
+                    <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                     <span className="text-sm">AI 学习语料</span>
                   </button>
 
@@ -687,7 +687,7 @@ export const WritingToolbar = ({
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
-                    <Tag className="h-4 w-4 text-blue-600" />
+                    <Tag className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span className="text-sm">设置标签</span>
                   </button>
 
@@ -736,7 +736,7 @@ export const WritingToolbar = ({
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
-                    <Trash2 className="h-4 w-4 text-red-600" />
+                    <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
                     <span className="text-sm">删除选中</span>
                   </button>
                 </div>

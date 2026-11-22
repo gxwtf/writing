@@ -216,7 +216,7 @@ export function NotebookListPage() {
                   <h3 className="font-semibold text-gray-900 dark:text-white">所有积累</h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">汇总全部积累</p>
                 </div>
-                <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-brand-crimson transition-colors" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-brand-crimson transition-colors" />
               </div>
             </div>
 
@@ -257,7 +257,7 @@ export function NotebookListPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          className="p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+                          className="p-1.5 rounded-md text-muted-foreground hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
                           aria-label={`更多操作 ${book.name}`}
                           data-testid="notebook-menu-trigger"
                         >
@@ -290,13 +290,13 @@ export function NotebookListPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 min-h-[26px]">
+                  <p className="text-xs text-muted-foreground mt-4 min-h-[26px]">
                     暂无积累
                   </p>
                 )}
 
                 <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
-                  <span className="text-xs text-gray-400 dark:text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     更新于 {formatDate(book.updatedAt)}
                   </span>
                   <span className="text-xs text-brand-crimson dark:text-red-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

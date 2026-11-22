@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BookMarked, HelpCircle, Home, Library, LogOut, NotebookPen, Settings, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 const NAV_LINK_CLASSES =
   'flex items-center space-x-1 @min-[560px]:space-x-1.5 sm:space-x-2 px-1.5 @min-[560px]:px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors shrink-0 whitespace-nowrap';
@@ -95,6 +96,9 @@ export const Navbar = ({ currentPage }: NavbarProps = {}) => {
               <BookMarked className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden @min-[640px]:inline">广学英语</span>
             </a>
+
+            {/* 主题切换（浅色 / 深色 / 跟随系统）：未登录也显示，移动端 icon-only */}
+            <ThemeToggle className="shrink-0" />
 
             {userInfo && (
               <div className="flex items-center space-x-2 sm:space-x-4 pl-2 sm:pl-4 border-l border-gray-200 dark:border-gray-700 shrink-0">
