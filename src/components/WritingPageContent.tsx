@@ -384,7 +384,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
   // 加载中状态
   if (!isClient || isLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 dark:border-gray-400 mx-auto"></div>
           <p className="mt-4 text-gray-600 dark:text-gray-400">加载中...</p>
@@ -399,7 +399,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
@@ -426,7 +426,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
                   <DropdownMenuTrigger asChild>
                     <button
                       aria-label="切换积累本"
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-muted transition-colors"
                     >
                       <ChevronDown className="h-4 w-4" />
                     </button>
@@ -500,7 +500,7 @@ export function WritingPageContent({ notebookId, notebookName }: WritingPageCont
         {/* 确认删除弹窗 */}
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 mx-3">
+            <div className="bg-card rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 mx-3">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 确认删除
               </h3>

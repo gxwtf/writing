@@ -128,7 +128,7 @@ export const WritingToolbar = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+    <div className="bg-card p-3 sm:p-4 border-b border-gray-200 dark:border-border sticky top-0 z-10">
       {/* 桌面端：左右布局 */}
       <div className="hidden md:flex items-center justify-between gap-3">
         {/* 左侧：选择和排序 */}
@@ -227,7 +227,7 @@ export const WritingToolbar = ({
             </Button>
 
             {showFilterDropdown && (
-              <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20 max-h-80 overflow-y-auto" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+              <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 bg-card rounded-lg shadow-lg border border-gray-200 dark:border-border z-20 max-h-80 overflow-y-auto" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
                 <div className="p-3 sm:p-4" data-filter-dropdown-inner onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mb-3">
                     选择标签筛选
@@ -244,7 +244,7 @@ export const WritingToolbar = ({
                         return (
                           <div
                             key={tagName}
-                            className="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700"
+                            className="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-muted"
                             onClick={(e) => e.stopPropagation()}
                             onMouseDown={(e) => e.stopPropagation()}
                             onPointerDown={(e) => e.stopPropagation()}
@@ -336,7 +336,7 @@ export const WritingToolbar = ({
             </Button>
 
             {showBatchDropdown && (
-              <div className="absolute top-full right-0 mt-2 w-64 sm:w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+              <div className="absolute top-full right-0 mt-2 w-64 sm:w-80 bg-card rounded-lg shadow-lg border border-gray-200 dark:border-border z-20" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
                 <div className="p-3 sm:p-4" data-batch-dropdown-inner onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
                   {/* AI找词选项 */}
                   <button
@@ -345,7 +345,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onAIFindWords();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
@@ -360,7 +360,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onExportPdf();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
@@ -375,7 +375,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onSetTags();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
@@ -391,7 +391,7 @@ export const WritingToolbar = ({
                         setShowBatchDropdown(false);
                         onCopyToNotebook();
                       }}
-                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                       onMouseDown={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
                     >
@@ -408,7 +408,7 @@ export const WritingToolbar = ({
                         setShowBatchDropdown(false);
                         onMoveToNotebook();
                       }}
-                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                       onMouseDown={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
                     >
@@ -424,7 +424,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onDeleteSelected();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
@@ -536,7 +536,7 @@ export const WritingToolbar = ({
             </Button>
 
             {showFilterDropdown && (
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20 max-h-80 overflow-y-auto">
+              <div className="absolute top-full left-0 mt-2 w-64 bg-card rounded-lg shadow-lg border border-gray-200 dark:border-border z-20 max-h-80 overflow-y-auto">
                 <div className="p-3" data-filter-dropdown-inner onPointerDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mb-3">
                     选择标签筛选
@@ -553,7 +553,7 @@ export const WritingToolbar = ({
                         return (
                           <div
                             key={tagName}
-                            className="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700"
+                            className="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-muted"
                             onClick={(e) => e.stopPropagation()}
                             onMouseDown={(e) => e.stopPropagation()}
                             onPointerDown={(e) => e.stopPropagation()}
@@ -644,7 +644,7 @@ export const WritingToolbar = ({
             </Button>
 
             {showBatchDropdown && (
-              <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20 max-h-80 overflow-y-auto">
+              <div className="absolute top-full right-0 mt-2 w-64 bg-card rounded-lg shadow-lg border border-gray-200 dark:border-border z-20 max-h-80 overflow-y-auto">
                 <div className="p-3" data-batch-dropdown-inner onPointerDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
                   {/* AI找词选项 */}
                   <button
@@ -653,7 +653,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onAIFindWords();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
@@ -668,7 +668,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onExportPdf();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
@@ -683,7 +683,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onSetTags();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >
@@ -699,7 +699,7 @@ export const WritingToolbar = ({
                         setShowBatchDropdown(false);
                         onCopyToNotebook();
                       }}
-                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                       onMouseDown={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
                     >
@@ -716,7 +716,7 @@ export const WritingToolbar = ({
                         setShowBatchDropdown(false);
                         onMoveToNotebook();
                       }}
-                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                       onMouseDown={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
                     >
@@ -732,7 +732,7 @@ export const WritingToolbar = ({
                       setShowBatchDropdown(false);
                       onDeleteSelected();
                     }}
-                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-3 w-full p-2 rounded hover:bg-gray-50 dark:hover:bg-muted transition-colors"
                     onMouseDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                   >

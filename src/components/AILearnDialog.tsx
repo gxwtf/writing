@@ -318,7 +318,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
         showCloseButton={false}
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 border-b border-gray-200 bg-purple-50/70 p-5 dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+        <div className="flex items-start justify-between gap-3 border-b border-gray-200 bg-purple-50/70 p-5 dark:border-border dark:bg-card sm:p-6">
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500 text-white dark:bg-purple-600">
               <Sparkles className="h-5 w-5" />
@@ -335,7 +335,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
 
         {/* 页签（只在表单阶段显示，避免生成中误切换） */}
         {phase === 'form' && (
-          <div className="flex gap-1 border-b border-gray-200 bg-white px-3 pt-2 dark:border-gray-700 dark:bg-gray-900 sm:px-5">
+          <div className="flex gap-1 border-b border-gray-200 bg-card px-3 pt-2 dark:border-border sm:px-5">
             {TASKS.map((t) => {
               const Icon = t.icon;
               const active = task === t.id;
@@ -379,10 +379,10 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                         className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:focus-visible:ring-blue-700 sm:p-4 ${
                           isSelected
                             ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-300/60 dark:border-blue-500 dark:bg-blue-900/30 dark:ring-blue-700/60'
-                            : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600'
+                            : 'border-gray-200 bg-muted hover:border-gray-300 hover:bg-card dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-secondary'
                         }`}
                       >
-                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${isSelected ? 'bg-blue-600 text-white dark:bg-blue-500' : 'border border-gray-200 bg-white text-purple-600 dark:border-gray-500 dark:bg-gray-800 dark:text-purple-400'}`}>
+                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${isSelected ? 'bg-blue-600 text-white dark:bg-blue-500' : 'border border-gray-200 bg-card text-purple-600 dark:border-gray-500 dark:text-purple-400'}`}>
                           <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                         </div>
                         <div className="min-w-0">
@@ -420,7 +420,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                             genre === g.id
                               ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-300 dark:border-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:ring-blue-700'
-                              : 'border-gray-200 text-gray-600 hover:border-gray-300 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-500'
+                              : 'border-gray-200 text-muted-foreground hover:border-gray-300 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-500'
                           }`}
                         >
                           {g.label}
@@ -490,7 +490,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
           {/* ---------- 生成中 ---------- */}
           {phase === 'running' && (
             <div className="space-y-4">
-              <div className="flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50/60 p-3 dark:border-gray-600 dark:bg-gray-700/60">
+              <div className="flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50/60 p-3 dark:border-gray-600 dark:bg-muted/60">
                 <Loader2 className="h-5 w-5 shrink-0 animate-spin text-purple-600 dark:text-purple-400" />
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -507,7 +507,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                 </Button>
               </div>
 
-              <div className="h-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700" role="progressbar" aria-label="生成中">
+              <div className="h-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="生成中">
                 <div className="h-full w-1/3 animate-pulse rounded-full bg-brand-crimson" />
               </div>
 
@@ -521,7 +521,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                   const active = i === stepIndex - 1;
                   return (
                     <li key={long} className="flex flex-1 items-center gap-2">
-                      <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${done ? 'bg-brand-crimson text-white' : active ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-300 dark:bg-blue-900/40 dark:text-blue-200 dark:ring-blue-700' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
+                      <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${done ? 'bg-brand-crimson text-white' : active ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-300 dark:bg-blue-900/40 dark:text-blue-200 dark:ring-blue-700' : 'bg-muted text-gray-500 dark:text-gray-400'}`}>
                         {done ? <Check className="h-3 w-3" /> : i + 1}
                       </span>
                       <span className={`whitespace-nowrap ${active ? 'font-medium text-gray-700 dark:text-gray-200' : ''}`}>
@@ -538,7 +538,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                 <details
                   open={thinkOpen}
                   onToggle={(e) => setThinkOpen((e.currentTarget as HTMLDetailsElement).open)}
-                  className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800"
+                  className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-border dark:bg-card"
                 >
                   <summary className="cursor-pointer text-xs font-medium text-gray-600 dark:text-gray-300">
                     AI 思考过程 · 实时 {thinkingTotal} 字
@@ -556,7 +556,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
                 </div>
                 <pre
                   ref={streamBoxRef}
-                  className="max-h-56 overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+                  className="max-h-56 overflow-y-auto rounded-lg border border-gray-200 bg-card p-3 font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap text-gray-700 dark:border-border dark:text-gray-200"
                 >
                   {draftJson || (thinking ? '模型正在思考（见上方），思考结束后会输出 JSON…' : `正在连接模型，等待首个 token…（已等 ${(elapsedMs / 1000).toFixed(0)}s）`)}
                 </pre>
@@ -579,13 +579,13 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
 
               <div className="space-y-3">
                 {words.map((word, index) => (
-                  <div key={`${word.word}-${index}`} className={`rounded-xl border p-4 transition-colors ${selectedIndices.includes(index) ? 'border-blue-300 bg-blue-50/60 dark:border-blue-700 dark:bg-blue-900/20' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'}`}>
+                  <div key={`${word.word}-${index}`} className={`rounded-xl border p-4 transition-colors ${selectedIndices.includes(index) ? 'border-blue-300 bg-blue-50/60 dark:border-blue-700 dark:bg-blue-900/20' : 'border-gray-200 bg-card dark:border-border'}`}>
                     <div className="flex items-start gap-3">
                       <Checkbox checked={selectedIndices.includes(index)} onCheckedChange={() => toggleSelect(index)} className="mt-1 shrink-0" />
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                           <span className="text-base font-bold break-words text-gray-900 dark:text-white sm:text-lg">{word.word}</span>
-                          <Badge variant="selected" className="border-gray-300 bg-gray-100 text-xs text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">{word.type}</Badge>
+                          <Badge variant="selected" className="border-gray-300 bg-muted text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">{word.type}</Badge>
                           {word.replaceWord && (
                             <Badge variant="selected" className="border-blue-200 bg-blue-50 text-xs text-blue-700 dark:border-blue-800 dark:bg-blue-900/40 dark:text-blue-200">代替 {word.replaceWord}</Badge>
                           )}
@@ -629,7 +629,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
 
           {phase === 'result' && payload && payload.verdict === 'ok' && (
             <div className="space-y-4">
-              <div className="rounded-xl border border-gray-200 p-3 dark:border-gray-700">
+              <div className="rounded-xl border border-gray-200 p-3 dark:border-border">
                 <div className="mb-2 flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300">
                   <Check className="h-3.5 w-3.5 text-brand-crimson" /> 解答
                 </div>
@@ -645,13 +645,13 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
               )}
 
               {payload.chunks.length > 0 && (
-                <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-3 dark:border-gray-700 dark:bg-gray-800/60">
+                <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-3 dark:border-border dark:bg-card/60">
                   <div className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-300">
                     可迁移语块（{payload.chunks.length}）
                   </div>
                   <ul className="space-y-2">
                     {payload.chunks.map((c, i) => (
-                      <li key={i} className="rounded-lg border border-gray-200 bg-white p-2.5 dark:border-gray-700 dark:bg-gray-900">
+                      <li key={i} className="rounded-lg border border-gray-200 bg-card p-2.5 dark:border-border">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-sm font-medium text-gray-900 dark:text-white">{c.text}</span>
                           <Badge variant="selected" className="border-indigo-200 bg-indigo-50 text-[11px] text-indigo-800 dark:border-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200">
@@ -666,7 +666,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
               )}
 
               {payload.analysis && payload.analysis !== NO_ANALYSIS && (
-                <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-3 dark:border-gray-700 dark:bg-gray-800/60">
+                <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-3 dark:border-border dark:bg-card/60">
                   <div className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-300">分析</div>
                   <div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-gray-700 dark:text-gray-300">
                     {payload.analysis}
@@ -701,7 +701,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
 
         {/* 底部操作 */}
         {phase === 'result' && !payload && (
-          <div className="flex flex-col gap-3 border-t border-gray-200 p-4 dark:border-gray-700 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-col gap-3 border-t border-gray-200 p-4 dark:border-border sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="flex items-center gap-3">
               <span className="whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">已选择 {selectedIndices.length} 个单词</span>
               <Button variant="ghost" size="sm" onClick={() => setPhase('form')} className="h-8 px-2 text-xs">再找一次</Button>
@@ -722,7 +722,7 @@ export const AILearnDialog = ({ isOpen, onClose, entryIds, notebookId, onSaved }
         )}
 
         {phase === 'result' && payload && payload.verdict === 'ok' && (
-          <div className="flex flex-col gap-3 border-t border-gray-200 p-4 dark:border-gray-700 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-col gap-3 border-t border-gray-200 p-4 dark:border-border sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" onClick={() => setPhase('form')} className="h-8 px-2 text-xs">换个任务</Button>
             </div>

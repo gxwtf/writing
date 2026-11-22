@@ -87,7 +87,7 @@ export function SettingsPageContent() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <Navbar currentPage="settings" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
@@ -112,7 +112,7 @@ export function SettingsPageContent() {
               <button
                 key={item.id}
                 onClick={item.onClick}
-                className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-left hover:shadow-md transition-all duration-200 group"
+                className="w-full bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border p-4 sm:p-6 text-left hover:shadow-md transition-all duration-200 group"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">

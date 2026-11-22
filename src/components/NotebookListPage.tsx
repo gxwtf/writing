@@ -160,7 +160,7 @@ export function NotebookListPage() {
 
   if (!isClient || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
         <div className="text-gray-500 dark:text-gray-400">加载中...</div>
       </div>
     );
@@ -171,7 +171,7 @@ export function NotebookListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <Navbar currentPage="books" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
@@ -206,10 +206,10 @@ export function NotebookListPage() {
             <div
               onClick={() => router.push('/books/all')}
               data-testid="all-entries-card"
-              className="group relative bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all flex items-center"
+              className="group relative bg-card rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all flex items-center"
             >
               <div className="flex items-center gap-3 min-w-0 w-full">
-                <div className="w-11 h-11 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
+                <div className="w-11 h-11 rounded-lg bg-muted flex items-center justify-center shrink-0">
                   <Layers className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -223,7 +223,7 @@ export function NotebookListPage() {
             {notebooks.length === 0 && (
               <div
                 onClick={openCreate}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all flex flex-col items-center justify-center text-center min-h-[120px]"
+                className="bg-card rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all flex flex-col items-center justify-center text-center min-h-[120px]"
               >
                 <BookOpen className="h-8 w-8 text-gray-300 dark:text-gray-600 mb-2" />
                 <p className="text-sm text-gray-500 dark:text-gray-400">还没有积累本，点击创建</p>
@@ -236,7 +236,7 @@ export function NotebookListPage() {
                 onClick={() => router.push(`/books/${book.id}`)}
                 data-testid="notebook-card"
                 data-notebook-name={book.name}
-                className="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all"
+                className="group relative bg-card rounded-xl border border-gray-200 dark:border-border p-5 cursor-pointer hover:shadow-lg hover:border-brand-crimson/40 transition-all"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
@@ -257,7 +257,7 @@ export function NotebookListPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          className="p-1.5 rounded-md text-muted-foreground hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+                          className="p-1.5 rounded-md text-muted-foreground hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-muted transition-colors"
                           aria-label={`更多操作 ${book.name}`}
                           data-testid="notebook-menu-trigger"
                         >
@@ -283,7 +283,7 @@ export function NotebookListPage() {
                     {book.previewEntries.map((text, index) => (
                       <span
                         key={`${book.id}-${index}`}
-                        className="max-w-full text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 truncate"
+                        className="max-w-full text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground dark:text-gray-200 truncate"
                       >
                         {text}
                       </span>
@@ -295,7 +295,7 @@ export function NotebookListPage() {
                   </p>
                 )}
 
-                <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+                <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-border">
                   <span className="text-xs text-muted-foreground">
                     更新于 {formatDate(book.updatedAt)}
                   </span>

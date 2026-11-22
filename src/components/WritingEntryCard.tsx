@@ -48,7 +48,7 @@ export const WritingEntryCard = ({
       className={`p-3 sm:p-4 rounded-lg border transition-all ${selectable ? 'cursor-pointer' : 'cursor-default'} ${
         isSelected
           ? 'bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-700'
-          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-md'
+          : 'bg-card border-gray-200 dark:border-border hover:shadow-md'
       }`}
       onClick={(e) => {
         if (!selectable) return;
@@ -86,7 +86,7 @@ export const WritingEntryCard = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => onEdit(entry)}
-                className="p-2 h-8 w-8 sm:h-9 sm:w-9 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-2 h-8 w-8 sm:h-9 sm:w-9 hover:bg-gray-100 dark:hover:bg-muted"
               >
                 <Edit2 className="h-4 w-4" />
               </Button>

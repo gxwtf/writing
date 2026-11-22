@@ -107,7 +107,7 @@ export function NotebookTransferDialog({
               </div>
             </div>
 
-            <div className="max-h-64 overflow-y-auto space-y-2 rounded-md border border-gray-200 dark:border-gray-700 p-3">
+            <div className="max-h-64 overflow-y-auto space-y-2 rounded-md border border-gray-200 dark:border-border p-3">
               {availableBooks.map((book) => (
                 <label
                   key={book.id}

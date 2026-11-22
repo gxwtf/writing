@@ -121,7 +121,7 @@ export const BatchTagModal = ({
                               : 'bg-blue-100 text-blue-800 border-blue-500 ring-2 ring-blue-500 ring-offset-1 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700 dark:ring-blue-700 dark:ring-offset-background'
                             : colorPreset
                               ? `${colorPreset.className} hover:bg-opacity-80`
-                              : 'bg-gray-200 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 hover:bg-opacity-80'
+                              : 'bg-gray-200 text-gray-700 border-gray-300 dark:bg-muted dark:text-gray-200 dark:border-gray-600 hover:bg-opacity-80'
                         }
                         cursor-pointer transition-all hover:scale-105 hover:opacity-90
                       `}

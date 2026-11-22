@@ -48,7 +48,7 @@ export function NotebookDetailPageContent({ params }: { params: Promise<{ id: st
 
   if (!isClient || isLoading || (isLoggedIn && loading)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
         <div className="text-gray-500 dark:text-gray-400 flex items-center gap-2">
           <Loader2 className="h-5 w-5 animate-spin" />
           加载中...
@@ -67,7 +67,7 @@ export function NotebookDetailPageContent({ params }: { params: Promise<{ id: st
 
   if (!notebook) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-gray-50 dark:bg-background">
         <Navbar currentPage="books" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <BookOpen className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" />

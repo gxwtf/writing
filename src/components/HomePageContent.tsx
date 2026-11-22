@@ -85,7 +85,7 @@ export function HomePageContent() {
 
   if (!isClient || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
         <div className="text-gray-500 dark:text-gray-400">加载中...</div>
       </div>
     );
@@ -129,7 +129,7 @@ export function HomePageContent() {
   const hasEntries = !loading && (stats?.entries ?? 0) > 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <Navbar currentPage="home" />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -144,7 +144,7 @@ export function HomePageContent() {
         </div>
 
         {/* 主卡片：每日一句 + 打开积累本 */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl border border-red-100 dark:border-gray-700 shadow-sm p-6 sm:p-8">
+        <div className="bg-card rounded-3xl border border-red-100 dark:border-border shadow-sm p-6 sm:p-8">
           <div className="flex flex-col items-center text-center">
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/30">
               <Quote className="h-5 w-5 text-brand-crimson dark:text-red-400" />
@@ -182,7 +182,7 @@ export function HomePageContent() {
           </div>
 
           {/* 统计条 */}
-          <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 grid grid-cols-4 gap-2">
+          <div className="mt-8 pt-6 border-t border-gray-100 dark:border-border grid grid-cols-4 gap-2">
             {statItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -223,20 +223,20 @@ export function HomePageContent() {
           ) : notebooks.length === 0 ? (
             <Link
               href="/books"
-              className="flex items-center justify-center gap-2 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 py-6 text-sm text-muted-foreground hover:border-brand-crimson/40 transition-colors"
+              className="flex items-center justify-center gap-2 bg-card rounded-2xl border border-dashed border-gray-200 dark:border-border py-6 text-sm text-muted-foreground hover:border-brand-crimson/40 transition-colors"
             >
               <Plus className="h-4 w-4" />
               还没有积累本，去创建一个
             </Link>
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden">
+            <div className="bg-card rounded-2xl border border-gray-100 dark:border-border shadow-sm divide-y divide-gray-100 dark:divide-border overflow-hidden">
               {notebooks.slice(0, 4).map((book, index) => {
                 const color = BOOK_COLORS[index % BOOK_COLORS.length];
                 return (
                   <Link
                     key={book.id}
                     href={`/books/${book.id}`}
-                    className="group flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                    className="group flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-muted/50 transition-colors"
                   >
                     <div
                       className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${color.bg}`}

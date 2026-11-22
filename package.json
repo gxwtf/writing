@@ -8,8 +8,8 @@
     "start": "node scripts/dev.mjs start",
     "typecheck": "tsc --noEmit",
     "test:e2e": "node scripts/e2e/run-all.mjs",
-    "check:theme": "node scripts/check-theme.mjs",
-    "e2e:theme": "node scripts/e2e/theme.mjs"
+    "e2e:theme": "node scripts/e2e/theme.mjs",
+    "check:colors": "node scripts/check-colors.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

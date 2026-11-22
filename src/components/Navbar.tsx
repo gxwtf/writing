@@ -10,7 +10,7 @@ const NAV_LINK_CLASSES =
   'flex items-center space-x-1 @min-[560px]:space-x-1.5 sm:space-x-2 px-1.5 @min-[560px]:px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors shrink-0 whitespace-nowrap';
 
 const INACTIVE_LINK_CLASSES =
-  'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800';
+  'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-card';
 
 /** 顶部导航高亮的当前页面：首页、积累本列表/详情、设置 */
 export type NavbarPage = 'home' | 'books' | 'settings';
@@ -35,7 +35,7 @@ export const Navbar = ({ currentPage }: NavbarProps = {}) => {
   const activePage = currentPage ?? resolvePage(pathname);
 
   return (
-    <nav className="pt-safe px-safe bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <nav className="pt-safe px-safe bg-background shadow-sm border-b border-gray-200 dark:border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="@container flex justify-between h-16">
           <div className="flex items-center shrink-0">
@@ -101,13 +101,13 @@ export const Navbar = ({ currentPage }: NavbarProps = {}) => {
             <ThemeToggle className="shrink-0" />
 
             {userInfo && (
-              <div className="flex items-center space-x-2 sm:space-x-4 pl-2 sm:pl-4 border-l border-gray-200 dark:border-gray-700 shrink-0">
+              <div className="flex items-center space-x-2 sm:space-x-4 pl-2 sm:pl-4 border-l border-gray-200 dark:border-border shrink-0">
                 <Link
                   href="/settings"
                   title="设置"
                   className={`${NAV_LINK_CLASSES} ${
                     activePage === 'settings'
-                      ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100'
+                      ? 'bg-muted text-gray-900 dark:text-gray-100'
                       : INACTIVE_LINK_CLASSES
                   }`}
                   aria-current={activePage === 'settings' ? 'page' : undefined}

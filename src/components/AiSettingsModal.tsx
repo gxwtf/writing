@@ -125,7 +125,7 @@ export function AiSettingsModal({ isOpen, onClose }: AiSettingsModalProps) {
             </div>
 
             {mode === 'custom' && (
-              <div className="space-y-4 rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-gray-50/60 dark:bg-gray-800/40">
+              <div className="space-y-4 rounded-lg border border-gray-200 dark:border-border p-4 bg-gray-50/60 dark:bg-card/40">
                 <div className="space-y-2">
                   <Label htmlFor="ai-api-key">API Key</Label>
                   <Input
@@ -209,14 +209,14 @@ function ModeCard({ selected, onSelect, icon, title, description }: ModeCardProp
       className={`w-full text-left rounded-lg border p-4 transition-all flex items-start gap-3 ${
         selected
           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-500 dark:ring-blue-700'
-          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+          : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-gray-600'
       }`}
     >
       <div
         className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
           selected
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+            ? 'bg-blue-600 text-white dark:bg-blue-500'
+            : 'bg-muted text-gray-600 dark:text-gray-300'
         }`}
       >
         {icon}

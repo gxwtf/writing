@@ -19,7 +19,7 @@ export const UnauthenticatedPage = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 w-full max-w-2xl">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+          <div className="bg-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mr-4">
                 <PenLine className="w-6 h-6 text-brand-crimson" />
@@ -33,7 +33,7 @@ export const UnauthenticatedPage = () => {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+          <div className="bg-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mr-4">
                 <Tags className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -47,7 +47,7 @@ export const UnauthenticatedPage = () => {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+          <div className="bg-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mr-4">
                 <Sparkles className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -61,7 +61,7 @@ export const UnauthenticatedPage = () => {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+          <div className="bg-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-4">
                 <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />

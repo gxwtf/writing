@@ -74,7 +74,7 @@ export const ColorSelector = ({ isOpen, onClose, onColorSelect, currentColorId }
         </div>
 
         {/* 当前选择 */}
-        <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <div className="mb-4 p-3 bg-muted rounded-lg">
           <p className="text-sm text-gray-600 dark:text-gray-200 mb-2">当前选择：</p>
           <div className="flex items-center gap-2">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${COLOR_PRESETS.find(c => c.id === selectedColorId)?.className || 'bg-muted'}`}>

@@ -150,7 +150,7 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                     className={`flex items-center justify-between p-3 rounded-lg ${
                       editingTag === tag
                         ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 dark:border-blue-400'
-                        : 'bg-gray-50 dark:bg-gray-700'
+                        : 'bg-muted'
                     }`}
                   >
                     {editingTag === tag ? (
@@ -181,7 +181,7 @@ export const TagEditModal = ({ isOpen, onClose, onTagsUpdate, currentTags }: Tag
                         <div className="flex items-center gap-2">
                           <Badge
                             variant="outline"
-                            className={`${colorPreset?.className || 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+                            className={`${colorPreset?.className || 'bg-gray-200 text-gray-700 dark:bg-muted dark:text-gray-200'}`}
                           >
                             {config.name}
                           </Badge>
