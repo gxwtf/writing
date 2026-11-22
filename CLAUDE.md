@@ -39,7 +39,7 @@
 1. `pnpm typecheck` 与 `pnpm build` 必须通过；
 2. 涉及页面的改动，运行 `scripts/e2e/` 下的 Playwright 回归（服务器上用 `/usr/bin/microsoft-edge`，
    **不要用 `chromium-browser`**）；
-3. 回归脚本使用测试账号（`scripts/e2e/creds.json`，当前为 `爸儿爷孙天团`，普通用户），**不要用开发者本人账号**；脚本会真实写入数据且不自动清理，跑完记得清理该账号下的测试数据；
+3. 回归脚本使用测试账号（`scripts/e2e/creds.json`，**全站统一**为 SSO 普通用户 `爸儿爷孙天团`，权威来源 `~/gxwtf_dev/password/README.md`），**不要用开发者本人账号**；需要管理员权限的用例才用 `小广`；脚本会真实写入数据且不自动清理，跑完记得清理该账号下的测试数据；
 4. 若改动了「新增/编辑/删除/批量标签」等核心流程，务必跑一遍完整回归。
 
 ### PDF 字体
